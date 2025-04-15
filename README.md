@@ -11,11 +11,11 @@ Promover boas práticas de estruturação e modularização de código.
 
 🛠️ Tecnologias Utilizadas
 
-Linguagem: JavaFx 
+Linguagem: JavaFx <br>
 IDE: IntelliJ IDEA 
 
 
 
-João Calado
-João Vargas
+João Calado<br>
+João Vargas<br>
 Licenciatura em Engenharia Informática
