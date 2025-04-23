@@ -22,5 +22,9 @@ public class BoardModel {
         return board;
     }
 
+    public void updateCell(Position position, PositionContent content){
+        board.get(position.getRow()).set(position.getCol(), content);
+    }
+
 
 }

@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
 
 public class SnowmanStart extends Application {
     @Override
@@ -46,14 +47,15 @@ public class SnowmanStart extends Application {
         vbox.getChildren().addAll(playButton,resumeButton,quitButton);
         vbox.getStyleClass().add("vbox");
 
-        playButton.setId("playButton");
-
         StackPane root = new StackPane(home,monsterGif,vbox, settings);
         StackPane.setMargin(vbox, new Insets(220,0,0,0));
 
+        playButton.setId("playButton");
+
         // Ação para o Butão "Play Game!" viajar para a board de jogo
         playButton.setOnAction(event -> {
-            SnowManBoard snowManBoard = new SnowManBoard();
+            BoardModel boardModel = new BoardModel(5, 7);
+            SnowManBoard snowManBoard = new SnowManBoard(boardModel);
             Scene gameScene = new Scene(snowManBoard, 800, 600);
             stage.setScene(gameScene);
         });
