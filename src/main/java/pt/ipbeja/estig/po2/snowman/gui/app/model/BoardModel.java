@@ -7,7 +7,6 @@ public class BoardModel {
 
     private List<List<PositionContent>> board;
 
-
     public BoardModel(int rows, int cols) {
         board = new ArrayList<>(rows);
         for (int i = 0; i < rows; i++)  {

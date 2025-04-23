@@ -1,45 +1,15 @@
 /* styles.css */
 
-/* Animação de tremor (shake) */
-@keyframes shake {
-    0% {
-        -fx-translate-x: 0;
-    }
-    25% {
-        -fx-translate-x: -10px;
-    }
-    50% {
-        -fx-translate-x: 10px;
-    }
-    75% {
-        -fx-translate-x: -10px;
-    }
-    100% {
-        -fx-translate-x: 0;
-    }
-}
-
-/* Aplique a animação de tremor ao botão Play */
-#playButton {
-    animation: shake 0.5s ease-in-out infinite;
-    animation-delay: 0.5s; /* Aguarda 2 segundos antes de iniciar a animação */
-    animation-timing-function: ease-in-out;
-}
-
-/* Esta linha vai garantir que o tremor seja contínuo a cada 2 segundos */
-@keyframes shakeInterval {
-    0% {
-        transform: translateX(0);
-    }
-    50% {
-        transform: translateX(-10px);
-    }
-    100% {
-        transform: translateX(10px);
-    }
-}
-
-#playButton {
-    animation: shakeInterval 0.5s ease-in-out infinite;
-    animation-delay: 2s; /* Começar depois de 2 segundos */
+.vbox .button {
+    -fx-background-color: #000000;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: "Comic Sans MS";
+    -fx-padding: 8px 10px;
+    -fx-border-width: 3px;
+    -fx-border-color: #A26644;
+    -fx-background-radius: 14px;
+    -fx-border-radius: 12px;
+    -fx-max-width: 120px;
+    -fx-max-height: 50px;
 }
