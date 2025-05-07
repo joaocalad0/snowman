@@ -49,7 +49,5 @@ public class SnowmanCell extends StackPane {
             case BLOCK -> imageView.setImage(block);
             case SNOWMAN -> imageView.setImage(snowman);
         }
-
-
     }
 }

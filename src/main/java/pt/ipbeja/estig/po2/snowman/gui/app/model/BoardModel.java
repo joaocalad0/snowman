@@ -6,6 +6,7 @@ import java.util.List;
 public class BoardModel {
 
     private List<List<PositionContent>> board;
+    private Monster monster;
 
 
     public BoardModel(int rows, int cols) {
@@ -18,6 +19,7 @@ public class BoardModel {
         this.board.add(row);
       }
         level1();
+        this.monster = new Monster(new Position(0, 0));
     }
 
     private void level1() {
@@ -33,8 +35,23 @@ public class BoardModel {
         return board;
     }
 
+    public Monster getMonster() {
+        return monster;
+    }
+
     public void updateCell(Position position, PositionContent content){
         board.get(position.getRow()).set(position.getCol(), content);
     }
+
+
+    private boolean isValidMove(Position position) {
+        return position.getRow() >= 0 && position.getRow() < board.size()
+                && position.getCol() >= 0 && position.getCol() < board.get(0).size();
+    }
+
+    private void updateBoard(Position newPos) {
+        updateCell(newPos, PositionContent.SNOWMAN);
+    }
+
 
 }

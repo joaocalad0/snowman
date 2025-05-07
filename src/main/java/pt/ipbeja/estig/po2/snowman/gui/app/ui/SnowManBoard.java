@@ -35,7 +35,6 @@ public class SnowManBoard extends GridPane implements View {
 
                 this.add(cell, col, row);
                 cells[row][col] = cell;
-
             }
         }
 

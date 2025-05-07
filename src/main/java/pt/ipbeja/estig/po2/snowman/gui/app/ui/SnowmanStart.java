@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
 import pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController;
 
+import static pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController.playMusic2;
+
 public class SnowmanStart extends Application {
     @Override
     public void start(Stage stage) {
@@ -67,7 +69,7 @@ public class SnowmanStart extends Application {
             stage.setScene(gameScene);
 
             // Música background 1º nível
-            SoundController.playMusic2("/audio/Level1Music.wav");
+            playMusic2("/Level1Music.wav");
 
 
         });

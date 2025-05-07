@@ -2,6 +2,8 @@ package pt.ipbeja.estig.po2.snowman.gui.app.ui;
 import javax.sound.sampled.*;
 import java.io.IOException;
 
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
+
 public class SoundController {
 
     private static Clip currentClip;
@@ -9,7 +11,7 @@ public class SoundController {
     public static void playMusic(String resourcePath) {
         stopMusic(); // parar música anterior, se estiver a tocar
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+            AudioInputStream audioStream = getAudioInputStream(
                     SoundController.class.getResource("/MenuBackgroundMusic.wav")
             );
             currentClip = AudioSystem.getClip();
@@ -32,7 +34,7 @@ public class SoundController {
     public static void playMusic2(String resourcePath) {
         stopMusic(); // parar música anterior, se estiver a tocar
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(
+            AudioInputStream audioStream = getAudioInputStream(
                     SoundController.class.getResource("/Level1Music.wav")
             );
             currentClip = AudioSystem.getClip();
