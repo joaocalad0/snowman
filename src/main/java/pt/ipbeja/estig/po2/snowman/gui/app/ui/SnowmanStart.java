@@ -11,10 +11,15 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
+import pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController;
 
 public class SnowmanStart extends Application {
     @Override
     public void start(Stage stage) {
+
+
+        //Música background menu
+        SoundController.playMusic("/audio/MenuBackgroundMusic.wav");
 
         // Imagem de inico de jogo
         ImageView home = new ImageView(new Image("/snowmanHomeScreen.png"));
@@ -54,10 +59,17 @@ public class SnowmanStart extends Application {
 
         // Ação para o Butão "Play Game!" viajar para a board de jogo
         playButton.setOnAction(event -> {
+
+
             BoardModel boardModel = new BoardModel(5, 7);
             SnowManBoard snowManBoard = new SnowManBoard(boardModel);
             Scene gameScene = new Scene(snowManBoard, 800, 600);
             stage.setScene(gameScene);
+
+            // Música background 1º nível
+            SoundController.playMusic2("/audio/Level1Music.wav");
+
+
         });
 
         Scene scene = new Scene(root, 800, 600);
@@ -66,9 +78,7 @@ public class SnowmanStart extends Application {
         stage.setScene(scene);
         stage.show();
 
-        //Música background menu
-        BackgroundMusic menuMusic = new BackgroundMusic();
-        menuMusic.playMusic("/lofi-chill-background-music-330144.wav");
+
 
     }
 
