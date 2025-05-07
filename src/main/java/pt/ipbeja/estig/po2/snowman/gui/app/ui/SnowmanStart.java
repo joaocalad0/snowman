@@ -66,6 +66,10 @@ public class SnowmanStart extends Application {
         stage.setScene(scene);
         stage.show();
 
+        //Música background menu
+        BackgroundMusic menuMusic = new BackgroundMusic();
+        menuMusic.playMusic("/lofi-chill-background-music-330144.wav");
+
     }
 
     public static void main(String[] args) {
