@@ -32,7 +32,7 @@ public class SoundController {
     }
 
     public static void playMusic2(String resourcePath) {
-        stopMusic(); // parar música anterior, se estiver a tocar
+        stopMusic();
         try {
             AudioInputStream audioStream = getAudioInputStream(
                     SoundController.class.getResource("/Level1Music.wav")

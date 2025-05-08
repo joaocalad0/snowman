@@ -37,7 +37,6 @@ public class SnowManBoard extends GridPane implements View {
                 cells[row][col] = cell;
             }
         }
-
     }
 
     @Override
