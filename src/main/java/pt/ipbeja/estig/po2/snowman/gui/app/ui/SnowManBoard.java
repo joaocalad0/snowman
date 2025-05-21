@@ -32,13 +32,25 @@ public class SnowManBoard extends GridPane implements View {
             for (int col = 0; col < board.get(row).size(); col++) {
                 Position position = new Position(row, col);
                 SnowmanCell cell = new SnowmanCell(position);
-                cell.setPositionContent(board.get(row).get(col));
+                if (position.equals(monsterPosition)) {
+                    cell.setAsMonster();
+                } else {
+                    cell.setPositionContent(board.get(row).get(col));
+                }
 
                 this.add(cell, col, row);
                 cells[row][col] = cell;
             }
         }
     }
+
+    public void updateMonsterPosition(Position oldPos, Position newPos) {
+        // Limpar a célula antiga
+        cells[oldPos.getRow()][oldPos.getCol()].setPositionContent(model.getBoard().get(oldPos.getRow()).get(oldPos.getCol()));
+        // Definir a célula nova como monstro
+        cells[newPos.getRow()][newPos.getCol()].setAsMonster();
+    }
+
 
     @Override
     public void update(Position position, PositionContent content) {

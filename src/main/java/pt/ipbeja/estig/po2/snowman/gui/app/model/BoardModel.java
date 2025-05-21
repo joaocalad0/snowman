@@ -20,6 +20,7 @@ public class BoardModel {
       }
         level1();
         this.monster = new Monster(new Position(0, 0));
+        this.updateCell(monster.getPosition(), PositionContent.MONSTER);
     }
 
     private void level1() {

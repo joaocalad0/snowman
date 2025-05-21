@@ -56,10 +56,8 @@ public class SnowmanStart extends Application {
         StackPane.setMargin(vbox, new Insets(220,0,0,0));
 
         playButton.setId("playButton");
-
         // Ação para o Butão "Play Game!" viajar para a board de jogo
         playButton.setOnAction(event -> {
-
 
             BoardModel boardModel = new BoardModel(5, 7);
             SnowManBoard snowManBoard = new SnowManBoard(boardModel);
@@ -68,7 +66,6 @@ public class SnowmanStart extends Application {
 
             // Música background 1º nível
             playMusic2("/Level1Music.wav");
-
 
         });
 
