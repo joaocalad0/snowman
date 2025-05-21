@@ -44,14 +44,17 @@ public class BoardModel {
         return board;
     }
 
+    public void setMonster(Monster monster) {
+        this.monster = monster;
+    }
+
     public Monster getMonster() {
-        return monster;
+        return this.monster;
     }
 
     public void updateCell(Position position, PositionContent content){
         board.get(position.getRow()).set(position.getCol(), content);
     }
-
 
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
@@ -86,7 +89,5 @@ public class BoardModel {
         // Atualiza a célula no tabuleiro onde o monstro se moveu
         updateCell(newPos, PositionContent.SNOWMAN);
     }
-
-
 
 }

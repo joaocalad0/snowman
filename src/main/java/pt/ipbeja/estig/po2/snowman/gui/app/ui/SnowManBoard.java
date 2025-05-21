@@ -25,6 +25,7 @@ public class SnowManBoard extends GridPane implements View {
 
     private void createBoard() {
 
+        Position monsterPosition = model.getMonster().getPosition();
         List<List<PositionContent>> board = model.getBoard();
         cells = new SnowmanCell[board.size()][board.get(0).size()];
         for (int row = 0; row < board.size(); row++) {
@@ -43,7 +44,6 @@ public class SnowManBoard extends GridPane implements View {
     public void update(Position position, PositionContent content) {
         model.updateCell(position, content);
     }
-
 
     @Override
     public void onGameWon(PositionContent positionContent) {

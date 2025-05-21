@@ -18,8 +18,6 @@ import static pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController.playMusic2;
 public class SnowmanStart extends Application {
     @Override
     public void start(Stage stage) {
-
-
         //Música background menu
         SoundController.playMusic("/audio/MenuBackgroundMusic.wav");
 
@@ -79,8 +77,6 @@ public class SnowmanStart extends Application {
         stage.setTitle("A Good Snowman Is Hard To Build");
         stage.setScene(scene);
         stage.show();
-
-
 
     }
 
