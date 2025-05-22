@@ -17,8 +17,8 @@ public class SnowmanCell extends StackPane {
     //private static final Image snowman = new Image("block");
     private static final Image monster = new Image("/monster.png");
 
-    private final ImageView backgroundView = new ImageView(); // novo: fundo (relva ou neve)
-    private final ImageView imageView = new ImageView();      // mantém: conteúdo (bloco, monstro, etc.)
+    private final ImageView backgroundView = new ImageView(); //fundo da primeira camada (relva ou neve)
+    private final ImageView imageView = new ImageView();      // mantém: conteúdo (bloco, monstro, etc.) em cima da reva como segudo plano
 
 
     private final Position position;
@@ -40,7 +40,7 @@ public class SnowmanCell extends StackPane {
         this.setPadding(Insets.EMPTY);
         StackPane.setMargin(imageView, Insets.EMPTY);
 
-        // Ordem importa: fundo depois conteúdo
+        // fundo depois conteúdo
         this.getChildren().addAll(backgroundView, imageView);
 
         // Por defeito: relva no fundo, vazio por cima
@@ -53,6 +53,7 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsMonster() {
+        //print just for debug
         System.out.println("A definir imagem de monstro em " + position);
         this.imageView.setImage(monster);
         this.setStyle(null);
