@@ -11,7 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
-import pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController;
 
 import static pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController.playMusic2;
 
@@ -55,18 +54,35 @@ public class SnowmanStart extends Application {
         StackPane root = new StackPane(home,monsterGif,vbox, settings);
         StackPane.setMargin(vbox, new Insets(220,0,0,0));
 
-        playButton.setId("playButton");
-        // Ação para o Butão "Play Game!" viajar para a board de jogo
+        ImageView levelsMap = new ImageView(new Image("/levelsmap.png"));
+        levelsMap.setFitWidth(800);
+        levelsMap.setFitHeight(600);
+
         playButton.setOnAction(event -> {
+            // Botão para entrar no level 1
+            Button level1 = new Button("Level 1");
+            level1.getStyleClass().add("button");
 
-            BoardModel boardModel = new BoardModel(5, 7);
-            SnowManBoard snowManBoard = new SnowManBoard(boardModel);
-            Scene gameScene = new Scene(snowManBoard, 800, 600);
-            stage.setScene(gameScene);
+            level1.setOnAction(e -> {
+                BoardModel boardModel = new BoardModel(5, 7);
+                SnowManBoard snowManBoard = new SnowManBoard(boardModel);
+                Scene gameScene = new Scene(snowManBoard, 800, 600);
+                stage.setScene(gameScene);
+                snowManBoard.requestFocus();
 
-            // Música background 1º nível
-            playMusic2("/Level1Music.wav");
+                // Música background do 1º nível
+                playMusic2("/Level1Music.wav");
+            });
 
+            VBox levelButtons = new VBox(10, level1);
+            levelButtons.setAlignment(Pos.CENTER);
+            levelButtons.getStyleClass().add("vbox");
+
+            StackPane levelRoot = new StackPane(levelsMap, levelButtons, settings);
+
+            Scene levelScene = new Scene(levelRoot, 800, 600);
+            levelScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+            stage.setScene(levelScene);
         });
 
         Scene scene = new Scene(root, 800, 600);

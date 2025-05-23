@@ -4,6 +4,7 @@ public enum PositionContent {
     NO_SNOW,
     SNOW,
     BLOCK,
+    SNOWBALL,
     SNOWMAN,
     MONSTER
 }
