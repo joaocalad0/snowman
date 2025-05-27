@@ -51,6 +51,7 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsMonster() {
+        backgroundView.setImage(no_snow);
         contentView.setImage(monster);
     }
 
@@ -84,6 +85,7 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsSnowball(SnowballType type) {
+        backgroundView.setImage(snow);
         switch (type) {
             case SMALL -> contentView.setImage(smallSnowball);
             case AVERAGE -> contentView.setImage(averageSnowball);
