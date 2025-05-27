@@ -49,21 +49,48 @@ public class BoardModel {
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
         Position newPos = calculateNewPosition(currentPos, direction);
+
         if (isValidMove(newPos)) {
             PositionContent destino = board.get(newPos.getRow()).get(newPos.getCol());
 
-            if (destino == PositionContent.SNOW) {
-                board.get(newPos.getRow()).set(newPos.getCol(), PositionContent.SNOWBALL);
-                snowballs.put(newPos, SnowballType.SMALL);
-            } else if (destino == PositionContent.SNOWBALL) {
-                SnowballType moment = snowballs.get(newPos);
-                SnowballType newOne = grow(moment);
-                snowballs.put(newPos, newOne);
-            }
+            switch (destino) {
+                case SNOW -> {
+                    // A posição atual do monstro transforma-se numa bola de neve pequena
+                    snowballs.put(currentPos, SnowballType.SMALL);
+                    updateCell(currentPos, PositionContent.SNOWBALL);
+                    snowballs.put(currentPos, SnowballType.SMALL);
 
-            updateCell(currentPos, PositionContent.NO_SNOW);
-            monster.setPosition(newPos);
-            updateCell(newPos, PositionContent.MONSTER);
+                    // O monstro avança para a nova posição
+                    monster.setPosition(newPos);
+                    updateCell(newPos, PositionContent.MONSTER);
+                }
+                case SNOWBALL -> {
+                    // A bola de neve cresce na nova posição
+                    SnowballType atual = snowballs.get(newPos);
+                    SnowballType nova = grow(atual);
+                    snowballs.put(newPos, nova);
+
+                    // O monstro anda normalmente (posição atual fica a relva)
+                    updateCell(currentPos, PositionContent.NO_SNOW);
+                    monster.setPosition(newPos);
+                    updateCell(newPos, PositionContent.MONSTER);
+                }
+                case NO_SNOW -> {
+                    // Movimento normal em relva
+                    updateCell(currentPos, PositionContent.NO_SNOW);
+                    monster.setPosition(newPos);
+                    updateCell(newPos, PositionContent.MONSTER);
+                }
+                case SNOWMAN -> {
+                    // Pisar um boneco de neve, possível comportamento futuro
+                    updateCell(currentPos, PositionContent.NO_SNOW);
+                    monster.setPosition(newPos);
+                    updateCell(newPos, PositionContent.MONSTER);
+                }
+                default -> {
+                    // BLOCO ou outra coisa — não anda
+                }
+            }
         }
     }
 
@@ -93,6 +120,7 @@ public class BoardModel {
     }
 
     private SnowballType grow(SnowballType current) {
+        if (current == null)return SnowballType.SMALL;
         return switch (current) {
             case SMALL -> SnowballType.AVERAGE;
             case AVERAGE -> SnowballType.BIG;
