@@ -67,6 +67,8 @@ public class SnowmanStart extends Application {
                 BoardModel boardModel = new BoardModel(5, 7);
                 SnowManBoard snowManBoard = new SnowManBoard(boardModel);
                 Scene gameScene = new Scene(snowManBoard, 800, 600);
+                gameScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
                 stage.setScene(gameScene);
                 snowManBoard.requestFocus();
 

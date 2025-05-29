@@ -21,29 +21,38 @@ public class SnowmanCell extends StackPane {
 
     private final ImageView backgroundView = new ImageView();
     private final ImageView contentView = new ImageView();
+    private final ImageView snowballView = new ImageView();
 
     private final Position position;
-    private static final double CELL_SIZE = 114;
+    private static final double CELL_SIZE = 115;
 
     public SnowmanCell(Position position) {
         this.position = position;
 
-        for (ImageView view : new ImageView[]{backgroundView, contentView}) {
+        for (ImageView view : new ImageView[]{backgroundView, contentView, snowballView}) {
             view.setFitWidth(CELL_SIZE);
             view.setFitHeight(CELL_SIZE);
             view.setPreserveRatio(false);
             view.setSmooth(false);
+            view.setCache(true);
+            view.setPickOnBounds(false);
         }
 
         this.setPrefSize(CELL_SIZE, CELL_SIZE);
         this.setMinSize(CELL_SIZE, CELL_SIZE);
         this.setMaxSize(CELL_SIZE, CELL_SIZE);
         this.setPadding(Insets.EMPTY);
+        this.setSnapToPixel(true);
+        this.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        this.setScaleX(1.001);
+        this.setScaleY(1.001);
 
-        this.getChildren().addAll(backgroundView, contentView);
+        this.getChildren().addAll(backgroundView, contentView, snowballView);
 
         backgroundView.setImage(no_snow);
         contentView.setImage(null);
+
+        this.setSnapToPixel(true);
     }
 
     public Position getPosition() {

@@ -13,3 +13,11 @@
     -fx-max-width: 120px;
     -fx-max-height: 50px;
 }
+
+.cell {
+        -fx-padding: 0;
+        -fx-border-width: 0;
+        -fx-border-color: transparent;
+        -fx-background-insets: 0;
+        -fx-background-color: transparent;
+}

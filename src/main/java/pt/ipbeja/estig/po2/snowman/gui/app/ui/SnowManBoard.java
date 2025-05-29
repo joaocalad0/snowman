@@ -2,21 +2,23 @@ package pt.ipbeja.estig.po2.snowman.gui.app.ui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.*;
 
 import java.util.List;
 
-public class SnowManBoard extends GridPane implements View {
+public class SnowManBoard extends Pane implements View {
 
     private final BoardModel model;
     private SnowmanCell[][] cells;
+    private static final double CELL_SIZE = 114;
 
     public SnowManBoard(BoardModel model) {
         this.model = model;
-        this.setHgap(0);
-        this.setVgap(0);
+
         this.setPadding(Insets.EMPTY);
+        this.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+
         createBoard();
 
         this.setOnKeyPressed(event -> {
@@ -42,6 +44,7 @@ public class SnowManBoard extends GridPane implements View {
         Position monsterPosition = model.getMonster().getPosition();
         List<List<PositionContent>> board = model.getBoard();
         cells = new SnowmanCell[board.size()][board.get(0).size()];
+
         for (int row = 0; row < board.size(); row++) {
             for (int col = 0; col < board.get(row).size(); col++) {
                 Position position = new Position(row, col);
@@ -57,10 +60,16 @@ public class SnowManBoard extends GridPane implements View {
                     cell.setPositionContent(content);
                 }
 
-                this.add(cell, col, row);
+                // Posiciona manualmente a célula, evita gaps
+                cell.relocate(col * CELL_SIZE, row * CELL_SIZE);
+
+                this.getChildren().add(cell);
                 cells[row][col] = cell;
             }
         }
+
+        // Define tamanho total do painel para conter todas as células
+        this.setPrefSize(board.get(0).size() * CELL_SIZE, board.size() * CELL_SIZE);
     }
 
     public void updateMonsterPosition(Position oldPos, Position newPos) {
@@ -76,7 +85,6 @@ public class SnowManBoard extends GridPane implements View {
             cells[newPos.getRow()][newPos.getCol()].setAsMonster();
         }
     }
-
 
     @Override
     public void update(Position position, PositionContent content) {
