@@ -81,7 +81,7 @@ public class BoardModel {
 
     private boolean isValidMove(Position position) {
         if (position.getRow() < 0 || position.getRow() >= board.size() ||
-            position.getCol() < 0 || position.getCol() >= board.get(0).size()) {
+                position.getCol() < 0 || position.getCol() >= board.get(0).size()) {
             return false;
         }
         PositionContent content = board.get(position.getRow()).get(position.getCol());

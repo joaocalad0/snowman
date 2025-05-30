@@ -12,13 +12,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
 
-
+import static pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController.playMusic2;
 
 public class SnowmanStart extends Application {
     @Override
     public void start(Stage stage) {
         //Música background menu
-        SoundController.playMusic("/MenuBackgroundMusic.wav");
+        SoundController.playMusic("/audio/MenuBackgroundMusic.wav");
 
         // Imagem de inico de jogo
         ImageView home = new ImageView(new Image("/snowmanHomeScreen.png"));
@@ -40,7 +40,7 @@ public class SnowmanStart extends Application {
         StackPane.setAlignment(settings, Pos.CENTER_LEFT);
         StackPane.setMargin(settings, new Insets(505, 0, 0, 20));
 
-        // Botões
+        // Butões
         Button playButton = new Button("Play!");
         Button resumeButton = new Button("Resume Game!");
         Button quitButton = new Button("Quit Game!");
@@ -73,7 +73,7 @@ public class SnowmanStart extends Application {
                 snowManBoard.requestFocus();
 
                 // Música background do 1º nível
-                SoundController.playMusic("/Level1Music.wav");
+                playMusic2("/Level1Music.wav");
             });
 
             VBox levelButtons = new VBox(10, level1);

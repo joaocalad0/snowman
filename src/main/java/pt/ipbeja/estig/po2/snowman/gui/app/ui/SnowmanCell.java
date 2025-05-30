@@ -24,7 +24,7 @@ public class SnowmanCell extends StackPane {
     private final ImageView snowballView = new ImageView();
 
     private final Position position;
-    private static final double CELL_SIZE = 115;
+    private static final double CELL_SIZE = 114;
 
     public SnowmanCell(Position position) {
         this.position = position;
@@ -62,6 +62,7 @@ public class SnowmanCell extends StackPane {
     public void setAsMonster() {
         backgroundView.setImage(no_snow);
         contentView.setImage(monster);
+        snowballView.setImage(null);
     }
 
     public void setPositionContent(PositionContent content) {
@@ -69,37 +70,68 @@ public class SnowmanCell extends StackPane {
             case NO_SNOW -> {
                 backgroundView.setImage(no_snow);
                 contentView.setImage(null);
+                snowballView.setImage(null);
             }
             case SNOW -> {
                 backgroundView.setImage(snow);
                 contentView.setImage(null);
+                snowballView.setImage(null);
             }
             case BLOCK -> {
                 backgroundView.setImage(block);
                 contentView.setImage(null);
+                snowballView.setImage(null);
             }
             case MONSTER -> {
-                backgroundView.setImage(no_snow);
-                contentView.setImage(monster);
+                setAsMonster();
             }
             case SNOWBALL -> {
                 backgroundView.setImage(snow);
-                contentView.setImage(smallSnowball);
+                contentView.setImage(null);
             }
             default -> {
                 backgroundView.setImage(no_snow);
                 contentView.setImage(null);
+                snowballView.setImage(null);
             }
         }
     }
 
     public void setAsSnowball(SnowballType type) {
-        backgroundView.setImage(snow);
+        // Define o fundo como relva (sem neve)
+        backgroundView.setImage(no_snow);
+
+        // Limpa qualquer imagem anterior do contentView (como BLOCK ou SNOW)
+        contentView.setImage(null);
+
+        // Define a imagem da bola de neve correta com tamanho proporcional
         switch (type) {
-            case SMALL -> contentView.setImage(smallSnowball);
-            case AVERAGE -> contentView.setImage(averageSnowball);
-            case BIG -> contentView.setImage(bigSnowball);
-            default -> contentView.setImage(smallSnowball);
+            case SMALL -> {
+                snowballView.setImage(smallSnowball);
+                snowballView.setFitWidth(CELL_SIZE * 0.35);
+                snowballView.setFitHeight(CELL_SIZE * 0.35);
+            }
+            case AVERAGE -> {
+                snowballView.setImage(averageSnowball);
+                snowballView.setFitWidth(CELL_SIZE * 0.5);
+                snowballView.setFitHeight(CELL_SIZE * 0.5);
+            }
+            case BIG -> {
+                snowballView.setImage(bigSnowball);
+                snowballView.setFitWidth(CELL_SIZE * 0.75);
+                snowballView.setFitHeight(CELL_SIZE * 0.75);
+            }
+            default -> {
+                snowballView.setImage(smallSnowball);
+                snowballView.setFitWidth(CELL_SIZE * 0.25);
+                snowballView.setFitHeight(CELL_SIZE * 0.25);
+            }
         }
+
+        // Mantém as proporções da imagem
+        snowballView.setPreserveRatio(true);
     }
+
+
+
 }
