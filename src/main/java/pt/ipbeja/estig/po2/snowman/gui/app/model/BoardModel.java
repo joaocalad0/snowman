@@ -13,7 +13,7 @@ public class BoardModel {
 
     public BoardModel(int rows, int cols) {
         board = new ArrayList<>(rows);
-        for (int i = 0; i < rows; i++)  {
+        for (int i = 0; i < rows; i++) {
             List<PositionContent> row = new ArrayList<>(cols);
             for (int j = 0; j < cols; j++) {
                 row.add(PositionContent.NO_SNOW);
@@ -42,7 +42,7 @@ public class BoardModel {
         return this.monster;
     }
 
-    public void updateCell(Position position, PositionContent content){
+    public void updateCell(Position position, PositionContent content) {
         board.get(position.getRow()).set(position.getCol(), content);
     }
 
@@ -67,6 +67,9 @@ public class BoardModel {
         }
     }
 
+
+
+
     private Position calculateNewPosition(Position currentPos, Direction direction) {
         int row = currentPos.getRow();
         int col = currentPos.getCol();
@@ -88,16 +91,71 @@ public class BoardModel {
         return content != PositionContent.BLOCK;
     }
 
-    public SnowballType getSnowballTypeAt(Position position) {
-        return snowballs.getOrDefault(position, SnowballType.SMALL);
+
+    public Position getMonsterPosition() {
+        return this.monster.getPosition();
+    }
+   // public SnowballType getSnowballTypeAt(Position position) {
+       // return snowballs.getOrDefault(position, SnowballType.SMALL);
+    //}
+   public PositionContent getPositionContent(Position position) {
+       if (position.getRow() < 0 || position.getRow() >= board.size() ||
+               position.getCol() < 0 || position.getCol() >= board.get(0).size()) {
+           throw new IllegalArgumentException("Posição inválida: " + position);
+       }
+       return board.get(position.getRow()).get(position.getCol());
+
+   }
+
+
+
+    private SnowballType grow (SnowballType current){
+            return switch (current) {
+                case SMALL -> SnowballType.AVERAGE;
+                case AVERAGE -> SnowballType.BIG;
+                case BIG -> SnowballType.BIG; // Não cresce mais
+                case BIG_SMALL -> null;
+                case AVERAGE_SMALL -> null;
+                case BIG_AVERAGE -> null;
+            };
+        }
+
+    public void setMonsterPosition(Position newPosition) {
+        // Valida a posição
+        if (newPosition.getRow() < 0 || newPosition.getRow() >= board.size() ||
+                newPosition.getCol() < 0 || newPosition.getCol() >= board.get(0).size()) {
+            throw new IllegalArgumentException("Posição inválida para o monstro");
+        }
+
+        // Remove o monstro da posição atual (se existir)
+        if (this.monster != null) {
+            Position oldPos = this.monster.getPosition();
+            updateCell(oldPos, PositionContent.NO_SNOW);
+
+            // Se havia uma bola de neve na posição antiga, restaura
+            if (snowballs.containsKey(oldPos)) {
+                updateCell(oldPos, PositionContent.SNOWBALL);
+            }
+        }
+
+        // Atualiza para a nova posição
+        this.monster = new Monster(newPosition);
+        updateCell(newPosition, PositionContent.MONSTER);
     }
 
-    private SnowballType grow(SnowballType current) {
-        return switch (current) {
-            case SMALL -> SnowballType.AVERAGE;
-            case AVERAGE -> SnowballType.BIG;
-            case BIG -> SnowballType.BIG;  // Limite máximo
-            default -> SnowballType.SMALL; // fallback
-        };
+    public void addTestSnowball(Position pos, SnowballType type) {
+        this.snowballs.put(pos, type);
+        this.board.get(pos.getRow()).set(pos.getCol(), PositionContent.SNOWBALL);
+    }
+
+    public void setPositionContentForTest(Position pos, PositionContent content) {
+        this.board.get(pos.getRow()).set(pos.getCol(), content);
+    }
+
+    public SnowballType getSnowballTypeAt(Position pos) {
+        return snowballs.get(pos);
     }
 }
+
+
+
