@@ -100,11 +100,7 @@ public class SnowmanCell extends StackPane {
     public void setAsSnowball(SnowballType type) {
         // Define o fundo como relva (sem neve)
         backgroundView.setImage(no_snow);
-
-        // Limpa qualquer imagem anterior do contentView (como BLOCK ou SNOW)
         contentView.setImage(null);
-
-        // Define a imagem da bola de neve correta com tamanho proporcional
         switch (type) {
             case SMALL -> {
                 snowballView.setImage(smallSnowball);
@@ -127,7 +123,6 @@ public class SnowmanCell extends StackPane {
                 snowballView.setFitHeight(CELL_SIZE * 0.25);
             }
         }
-
         // Mantém as proporções da imagem
         snowballView.setPreserveRatio(true);
     }
