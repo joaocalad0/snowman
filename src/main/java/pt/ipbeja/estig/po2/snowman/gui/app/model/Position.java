@@ -18,3 +18,4 @@ public class Position {
         return col;
     }
 }
+

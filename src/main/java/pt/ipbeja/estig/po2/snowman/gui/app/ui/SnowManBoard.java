@@ -110,3 +110,5 @@ public class SnowManBoard extends Pane implements View {
         alert.showAndWait();
     }
 }
+
+
