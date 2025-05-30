@@ -76,61 +76,37 @@ public class BoardModel {
 
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
-        Position nextPos = calculateNewPosition(currentPos, direction);
-
-        if (!isValidMove(nextPos)) return;
-
-        PositionContent nextContent = board.get(nextPos.getRow()).get(nextPos.getCol());
-
-        // Caso 1: Célula tem uma bola de neve -> tentar empurrar
-        if (nextContent == PositionContent.SNOWBALL) {
-            Position beyond = calculateNewPosition(nextPos, direction);
-            if (!isValidMove(beyond)) return;
-
-            PositionContent beyondContent = board.get(beyond.getRow()).get(beyond.getCol());
-            if (beyondContent != PositionContent.NO_SNOW && beyondContent != PositionContent.SNOW) return;
-
-            // Empurra a bola de neve
-            SnowballType type = getSnowballTypeAt(nextPos);
-            if (beyondContent == PositionContent.SNOW && type != SnowballType.BIG) {
-                type = grow(type);
-            }
-
-            board.get(beyond.getRow()).set(beyond.getCol(), PositionContent.SNOWBALL);
-            snowballs.put(beyond, type);
-            view.update(beyond, PositionContent.SNOWBALL);
-
-            snowballs.remove(nextPos);
-            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.NO_SNOW);
-            view.update(nextPos, PositionContent.NO_SNOW);
-
-        } else if (nextContent != PositionContent.NO_SNOW && nextContent != PositionContent.SNOW) {
-            // Célula ocupada e não empurrável
+        Position newPos = calculateNewPosition(currentPos, direction);
+        if (!isValidMove(newPos)) {
             return;
         }
+        PositionContent newPosContent = board.get(newPos.getRow()).get(newPos.getCol());
+        if (board.get(currentPos.getRow()).get(currentPos.getCol()) == PositionContent.MONSTER) {
+            if (snowballs.containsKey(currentPos)) {
+                board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
+                view.update(currentPos, PositionContent.SNOWBALL);
+            } else {
+                board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.NO_SNOW);
+                view.update(currentPos, PositionContent.NO_SNOW);
+            }
+        }
 
-        // Atualiza a posição antiga do monstro
-        if (snowballs.containsKey(currentPos)) {
-            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
-            view.update(currentPos, PositionContent.SNOWBALL);
+        if (newPosContent == PositionContent.SNOW) {
+            board.get(newPos.getRow()).set(newPos.getCol(), PositionContent.SNOWBALL);
+            snowballs.put(newPos, SnowballType.SMALL);
+            view.update(newPos, PositionContent.SNOWBALL);
+        } else if (newPosContent == PositionContent.SNOWBALL) {
+            SnowballType currentBall = snowballs.get(newPos);
+            SnowballType newBall = grow(currentBall);
+            snowballs.put(newPos, newBall);
+            view.update(newPos, PositionContent.SNOWBALL);
         } else {
-            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.NO_SNOW);
-            view.update(currentPos, PositionContent.NO_SNOW);
+            view.update(newPos, newPosContent);
         }
-
-        // Se a próxima célula for neve, criamos uma bola pequena
-        if (nextContent == PositionContent.SNOW) {
-            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.SNOWBALL);
-            snowballs.put(nextPos, SnowballType.SMALL);
-            view.update(nextPos, PositionContent.SNOWBALL);
-        }
-
-        // Move o monstro
-        monster.setPosition(nextPos);
-        board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.MONSTER);
-        view.update(nextPos, PositionContent.MONSTER);
+        monster.setPosition(newPos);
+        board.get(newPos.getRow()).set(newPos.getCol(), PositionContent.MONSTER);
+        view.update(newPos, PositionContent.MONSTER);
     }
-
 
     public List<List<PositionContent>> getBoard() {
         return board;

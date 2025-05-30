@@ -12,7 +12,7 @@ public class SoundController {
         stopMusic(); // parar música anterior, se estiver a tocar
         try {
             AudioInputStream audioStream = getAudioInputStream(
-                    SoundController.class.getResource("/MenuBackgroundMusic.wav")
+                    SoundController.class.getResource(resourcePath)
             );
             currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
@@ -31,19 +31,5 @@ public class SoundController {
         }
     }
 
-    public static void playMusic2(String resourcePath) {
-        stopMusic();
-        try {
-            AudioInputStream audioStream = getAudioInputStream(
-                    SoundController.class.getResource("/Level1Music.wav")
-            );
-            currentClip = AudioSystem.getClip();
-            currentClip.open(audioStream);
-            currentClip.loop(Clip.LOOP_CONTINUOUSLY);
-            currentClip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
         }
-    }
-}
 

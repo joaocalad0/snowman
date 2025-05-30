@@ -11,12 +11,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.Monster;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.Position;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.PositionContent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static pt.ipbeja.estig.po2.snowman.gui.app.ui.SoundController.playMusic2;
 
@@ -68,29 +62,19 @@ public class SnowmanStart extends Application {
             // Botão para entrar no level 1
             Button level1 = new Button("Level 1");
             level1.getStyleClass().add("button");
+
             level1.setOnAction(e -> {
-                // Cria o tabuleiro vazio 5x7 preenchido com NO_SNOW
-                List<List<PositionContent>> board = new ArrayList<>();
-                for (int i = 0; i < 5; i++) {
-                    List<PositionContent> row = new ArrayList<>();
-                    for (int j = 0; j < 7; j++) {
-                        row.add(PositionContent.NO_SNOW);
-                    }
-                    board.add(row);
-                }
-                Monster monster = new Monster(new Position(0, 0));
-                BoardModel boardModel = new BoardModel(5, 7,null);
+                BoardModel boardModel = new BoardModel(5, 7);
                 SnowManBoard snowManBoard = new SnowManBoard(boardModel);
-                boardModel.setView(snowManBoard);  // Só se BoardModel tiver esse método.
                 Scene gameScene = new Scene(snowManBoard, 800, 600);
                 gameScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
                 stage.setScene(gameScene);
                 snowManBoard.requestFocus();
 
+                // Música background do 1º nível
                 playMusic2("/Level1Music.wav");
             });
-
 
             VBox levelButtons = new VBox(10, level1);
             levelButtons.setAlignment(Pos.CENTER);
