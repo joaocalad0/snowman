@@ -3,7 +3,7 @@ package pt.ipbeja.estig.po2.snowman.gui.app.model;
 import com.sun.source.doctree.ThrowsTree;
 
 public class SnowmanGame {
-
+/*
     private final BoardModel model;
     private final View view;
 
@@ -14,6 +14,6 @@ public class SnowmanGame {
 
     public void play(Position pos){
 
-    }
+    }*/
 
 }

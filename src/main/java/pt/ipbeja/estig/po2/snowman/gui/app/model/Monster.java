@@ -6,7 +6,7 @@ public class Monster {
     private int snowballCount;
 
     public Monster(Position position) {
-        this.position = position;
+        this.position = new Position(0,0);
         this.snowballCount = 0;
     }
 
