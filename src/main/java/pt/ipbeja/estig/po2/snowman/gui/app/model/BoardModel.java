@@ -39,6 +39,10 @@ public class BoardModel {
         board.get(2).set(3, PositionContent.SNOW);
         board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
+
+        Position pos = new Position(1,1);
+        board.get(pos.getRow()).set(pos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(pos, SnowballType.BIG);
     }
 
     public void setView(View view){
