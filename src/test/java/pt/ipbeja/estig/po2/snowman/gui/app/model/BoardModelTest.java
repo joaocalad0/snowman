@@ -2,24 +2,29 @@ package pt.ipbeja.estig.po2.snowman.gui.app.model;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BoardModelTest {
-    @Test
-    void boardtest() {
-    List<List<PositionContent>> board = new ArrayList<>(List.of(
-            new ArrayList<>(List.of(PositionContent.NO_SNOW)),
-            new ArrayList<>(List.of())
-    ));
 
-   // BoardModel boardModel = new BoardModel(board);
-    }
 
     @Test
-    void  testMonsterToTheLeft() {
+    void testMonsterToTheLeft() {
+        BoardModel model = new BoardModel(5, 7, new View() {
+            public void update(Position p, PositionContent c) {}
+            public void onGameWon(PositionContent w) {}
+        });
 
+        model.updateCell(model.getMonster().getPosition(), PositionContent.NO_SNOW);
+        model.getMonster().setPosition(new Position(1, 1));
+        model.moveMonster(Direction.LEFT);
+
+        assertAll(
+                () -> assertEquals(1, model.getMonster().getPosition().getRow()),
+                () -> assertEquals(0, model.getMonster().getPosition().getCol()),
+                () -> assertEquals(PositionContent.MONSTER, model.getBoard().get(1).get(0)),
+                () -> assertEquals(PositionContent.NO_SNOW, model.getBoard().get(1).get(1))
+        );
     }
 
     @Test
