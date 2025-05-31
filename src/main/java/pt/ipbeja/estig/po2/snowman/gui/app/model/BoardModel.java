@@ -1,5 +1,3 @@
-
-
 package pt.ipbeja.estig.po2.snowman.gui.app.model;
 
 import pt.ipbeja.estig.po2.snowman.gui.app.model.View;
@@ -14,6 +12,7 @@ public class BoardModel {
     private final List<List<PositionContent>> board;
     private Monster monster;
     private final Map<Position, SnowballType> snowballs;
+    private final Map<Position, PositionContent> originalCellContent;  // Conteúdo original das células ocupadas pelas bolas
     private View view;
 
     public BoardModel(int rows, int cols, View view) {
@@ -26,8 +25,9 @@ public class BoardModel {
             }
             this.board.add(row);
         }
-        this.snowballs = new HashMap<>(); // Inicializar primeiro
-        level1();                         // Depois já pode usar snowballs.put(...)
+        this.snowballs = new HashMap<>();
+        this.originalCellContent = new HashMap<>();
+        level1();
         this.monster = new Monster(new Position(0, 0));
         updateCell(monster.getPosition(), PositionContent.MONSTER);
     }
@@ -40,6 +40,7 @@ public class BoardModel {
         board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
     }
+
     public void setView(View view){
         this.view = view;
     }
@@ -75,49 +76,68 @@ public class BoardModel {
         PositionContent content = board.get(pos.getRow()).get(pos.getCol());
         return content != PositionContent.BLOCK;
     }
+
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
         Position nextPos = calculateNewPosition(currentPos, direction);
 
-        if (!isValidMove(nextPos)) return;
+        if (!isValidMove(nextPos)) {
+            System.out.println("Move inválido para " + nextPos);
+            return;
+        }
 
         PositionContent nextContent = board.get(nextPos.getRow()).get(nextPos.getCol());
 
-        // Caso 1: empurrar bola de neve
+        // Se a próxima posição for uma bola de neve
         if (nextContent == PositionContent.SNOWBALL) {
-            Position beyond = calculateNewPosition(nextPos, direction);
-            if (!isValidMove(beyond)) return;
+            Position beyondPos = calculateNewPosition(nextPos, direction);
+            if (!isValidMove(beyondPos)) {
+                System.out.println("Move inválido para além da bola em " + beyondPos);
+                return;
+            }
 
-            PositionContent beyondContent = board.get(beyond.getRow()).get(beyond.getCol());
-            if (beyondContent != PositionContent.NO_SNOW && beyondContent != PositionContent.SNOW) return;
+            PositionContent beyondContent = board.get(beyondPos.getRow()).get(beyondPos.getCol());
+            if (beyondContent != PositionContent.NO_SNOW && beyondContent != PositionContent.SNOW) {
+                System.out.println("Não pode mover bola para " + beyondPos + " porque está ocupado por " + beyondContent);
+                return;
+            }
 
             SnowballType currentType = snowballs.get(nextPos);
             if (currentType == null) {
                 System.err.println("Erro: bola de neve em " + nextPos + " sem tipo associado.");
                 currentType = SnowballType.SMALL;
-                snowballs.put(nextPos, currentType);
             }
+            System.out.println("Bola em " + nextPos + " antes de mover tem tamanho: " + currentType);
 
-            // Cresce se for neve e não estiver no tamanho máximo
+            // Se passar por relva e ainda não for BIG, cresce
             if (beyondContent == PositionContent.SNOW && currentType != SnowballType.BIG) {
                 currentType = grow(currentType);
+                System.out.println("Bola em " + nextPos + " cresceu para tamanho: " + currentType);
+            } else {
+                System.out.println("Bola em " + nextPos + " mantém tamanho: " + currentType);
             }
 
-            // Atualiza posição anterior
-            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.NO_SNOW);
+            // Restaurar o conteúdo da célula antiga da bola de neve
+            PositionContent oldCellContent = originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW);
+            board.get(nextPos.getRow()).set(nextPos.getCol(), oldCellContent);
+            originalCellContent.remove(nextPos);
             snowballs.remove(nextPos);
-            view.update(nextPos, PositionContent.NO_SNOW);
+            view.update(nextPos, oldCellContent);
 
-            // Atualiza nova posição da bola
-            board.get(beyond.getRow()).set(beyond.getCol(), PositionContent.SNOWBALL);
-            snowballs.put(beyond, currentType);
-            view.update(beyond, PositionContent.SNOWBALL);
+            // Guarda o conteúdo original da nova célula antes de colocar a bola
+            originalCellContent.put(beyondPos, board.get(beyondPos.getRow()).get(beyondPos.getCol()));
+
+            // Move a bola para a nova posição
+            board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWBALL);
+            snowballs.put(beyondPos, currentType);
+            view.update(beyondPos, PositionContent.SNOWBALL);
 
         } else if (nextContent != PositionContent.NO_SNOW && nextContent != PositionContent.SNOW) {
-            return;
+            System.out.println("Move bloqueado por " + nextContent + " em " + nextPos);
+            return; // Bloqueado por bloco ou outra coisa
         }
 
-        // Atualiza célula atual do monstro
+        // Atualiza a célula onde estava o monstro
         if (snowballs.containsKey(currentPos)) {
             board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
             view.update(currentPos, PositionContent.SNOWBALL);
@@ -126,10 +146,14 @@ public class BoardModel {
             view.update(currentPos, PositionContent.NO_SNOW);
         }
 
-        // Se for neve, cria uma nova bola pequena
+        // Se mover para relva, cria bola pequena
         if (nextContent == PositionContent.SNOW) {
+            // Guarda o conteúdo original da nova célula antes de colocar a bola
+            originalCellContent.put(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
+
             board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.SNOWBALL);
             snowballs.put(nextPos, SnowballType.SMALL);
+            System.out.println("Criada bola pequena em " + nextPos);
             view.update(nextPos, PositionContent.SNOWBALL);
         }
 
@@ -138,8 +162,6 @@ public class BoardModel {
         board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.MONSTER);
         view.update(nextPos, PositionContent.MONSTER);
     }
-
-
 
     public List<List<PositionContent>> getBoard() {
         return board;
@@ -150,5 +172,6 @@ public class BoardModel {
     }
 
     public void updateCell(Position newPos, PositionContent positionContent) {
+        // Implementa se precisares
     }
 }
