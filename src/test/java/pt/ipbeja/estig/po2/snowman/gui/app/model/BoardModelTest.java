@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BoardModelTest {
 
-
+//1º teste
     @Test
     void testMonsterToTheLeft() {
         BoardModel model = new BoardModel(5, 7, new View() {
@@ -24,6 +24,7 @@ class BoardModelTest {
                 () -> assertEquals(0, model.getMonster().getPosition().getCol()),
                 () -> assertEquals(PositionContent.MONSTER, model.getBoard().get(1).get(0)),
                 () -> assertEquals(PositionContent.NO_SNOW, model.getBoard().get(1).get(1))
+
         );
     }
 
