@@ -117,6 +117,10 @@ public class SnowmanCell extends StackPane {
                 snowballView.setFitWidth(CELL_SIZE * 0.75);
                 snowballView.setFitHeight(CELL_SIZE * 0.75);
             }
+            case AVERAGE_SMALL -> {
+                snowballView.setImage(new Image("/average_small.png"));
+                snowballView.setFitWidth(CELL_SIZE * 0.6);
+            }
             default -> {
                 snowballView.setImage(smallSnowball);
                 snowballView.setFitWidth(CELL_SIZE * 0.25);
@@ -126,8 +130,6 @@ public class SnowmanCell extends StackPane {
         // Mantém as proporções da imagem
         snowballView.setPreserveRatio(true);
     }
-
-
 
 }
 

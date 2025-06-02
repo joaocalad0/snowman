@@ -55,6 +55,7 @@ public class BoardModel {
         return switch (current) {
             case SMALL -> SnowballType.AVERAGE;
             case AVERAGE -> SnowballType.BIG;
+            case AVERAGE_SMALL -> SnowballType.BIG;
             case BIG -> SnowballType.BIG;
             default -> SnowballType.SMALL;
         };
