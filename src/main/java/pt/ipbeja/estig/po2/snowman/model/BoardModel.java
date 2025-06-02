@@ -57,7 +57,6 @@ public class BoardModel {
             case AVERAGE -> SnowballType.BIG;
             case AVERAGE_SMALL -> SnowballType.BIG;
             case BIG -> SnowballType.BIG;
-            default -> SnowballType.SMALL;
         };
     }
 
@@ -85,27 +84,39 @@ public class BoardModel {
         Position nextPos = calculateNewPosition(currentPos, direction);
 
         if (!isValidMove(nextPos)) {
-            System.out.println("Move inválido para " + nextPos);
             return;
         }
 
         PositionContent nextContent = board.get(nextPos.getRow()).get(nextPos.getCol());
 
-        // Se a próxima posição for uma bola de neve
         if (nextContent == PositionContent.SNOWBALL) {
             Position beyondPos = calculateNewPosition(nextPos, direction);
             if (!isValidMove(beyondPos)) {
-                System.out.println("Move inválido para além da bola em " + beyondPos);
                 return;
             }
 
             PositionContent beyondContent = board.get(beyondPos.getRow()).get(beyondPos.getCol());
-            if (beyondContent != PositionContent.NO_SNOW && beyondContent != PositionContent.SNOW) {
-                System.out.println("Não pode mover bola para " + beyondPos + " porque está ocupado por " + beyondContent);
-                return;
+            SnowballType currentType = snowballs.get(nextPos);
+
+            // Nova condição: se empurrar SMALL contra AVERAGE
+            if (beyondContent == PositionContent.SNOWBALL) {
+                SnowballType beyondType = snowballs.get(beyondPos);
+                if (currentType == SnowballType.SMALL && beyondType == SnowballType.AVERAGE) {
+                    // Transforma em AVERAGE_SMALL
+                    snowballs.put(beyondPos, SnowballType.AVERAGE_SMALL);
+                    view.update(beyondPos, PositionContent.SNOWBALL);
+
+                    // Remove a bola pequena que foi empurrada
+                    board.get(nextPos.getRow()).set(nextPos.getCol(),
+                            originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
+                    originalCellContent.remove(nextPos);
+                    snowballs.remove(nextPos);
+                    view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
+                    return;
+                }
             }
 
-            SnowballType currentType = snowballs.get(nextPos);
+            currentType = snowballs.get(nextPos);
             if (currentType == null) {
                 System.err.println("Erro: bola de neve em " + nextPos + " sem tipo associado.");
                 currentType = SnowballType.SMALL;
