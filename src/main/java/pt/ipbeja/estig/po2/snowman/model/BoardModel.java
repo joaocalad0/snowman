@@ -1,6 +1,4 @@
-package pt.ipbeja.estig.po2.snowman.gui.app.model;
-
-import pt.ipbeja.estig.po2.snowman.gui.app.model.View;
+package pt.ipbeja.estig.po2.snowman.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

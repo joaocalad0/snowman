@@ -1,4 +1,4 @@
-package pt.ipbeja.estig.po2.snowman.gui.app.ui;
+package pt.ipbeja.estig.po2.snowman.gui;
 import javax.sound.sampled.*;
 import java.io.IOException;
 

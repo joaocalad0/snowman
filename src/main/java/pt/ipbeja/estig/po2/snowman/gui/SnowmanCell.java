@@ -1,12 +1,12 @@
-package pt.ipbeja.estig.po2.snowman.gui.app.ui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.Position;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.PositionContent;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.SnowballType;
+import pt.ipbeja.estig.po2.snowman.model.Position;
+import pt.ipbeja.estig.po2.snowman.model.PositionContent;
+import pt.ipbeja.estig.po2.snowman.model.SnowballType;
 
 public class SnowmanCell extends StackPane {
 

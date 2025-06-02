@@ -1,9 +1,10 @@
-package pt.ipbeja.estig.po2.snowman.gui.app.ui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.*;
+import pt.ipbeja.estig.po2.snowman.gui.*;
+import pt.ipbeja.estig.po2.snowman.model.*;
 
 import java.util.List;
 

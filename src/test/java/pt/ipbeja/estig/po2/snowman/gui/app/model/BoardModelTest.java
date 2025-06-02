@@ -1,6 +1,7 @@
 package pt.ipbeja.estig.po2.snowman.gui.app.model;
 
 import org.junit.jupiter.api.Test;
+import pt.ipbeja.estig.po2.snowman.model.*;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

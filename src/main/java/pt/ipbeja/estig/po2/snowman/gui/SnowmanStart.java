@@ -1,4 +1,4 @@
-package pt.ipbeja.estig.po2.snowman.gui.app.ui;
+package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -10,10 +10,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.BoardModel;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.Monster;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.Position;
-import pt.ipbeja.estig.po2.snowman.gui.app.model.PositionContent;
+import pt.ipbeja.estig.po2.snowman.model.BoardModel;
+import pt.ipbeja.estig.po2.snowman.model.Monster;
+import pt.ipbeja.estig.po2.snowman.model.Position;
+import pt.ipbeja.estig.po2.snowman.model.PositionContent;
 
 import java.util.ArrayList;
 import java.util.List;
