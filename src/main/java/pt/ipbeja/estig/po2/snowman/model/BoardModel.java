@@ -99,8 +99,9 @@ public class BoardModel {
             SnowballType currentType = snowballs.get(nextPos);
 
             // Nova condição: se empurrar SMALL contra AVERAGE
+            SnowballType beyondType = null;
             if (beyondContent == PositionContent.SNOWBALL) {
-                SnowballType beyondType = snowballs.get(beyondPos);
+                beyondType = snowballs.get(beyondPos);
                 if (currentType == SnowballType.SMALL && beyondType == SnowballType.AVERAGE) {
                     // Transforma em AVERAGE_SMALL
                     snowballs.put(beyondPos, SnowballType.AVERAGE_SMALL);
@@ -114,6 +115,27 @@ public class BoardModel {
                     view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
                     return;
                 }
+            }
+
+            if ((currentType == SnowballType.AVERAGE_SMALL && beyondType == SnowballType.BIG) ||
+                    (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE_SMALL)) {
+
+                // Transforma em SNOWMAN
+                board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWMAN);
+                snowballs.remove(beyondPos);
+                originalCellContent.remove(beyondPos);
+                view.update(beyondPos, PositionContent.SNOWMAN);
+
+                // Remove a bola que foi empurrada
+                board.get(nextPos.getRow()).set(nextPos.getCol(),
+                        originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
+                originalCellContent.remove(nextPos);
+                snowballs.remove(nextPos);
+                view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
+
+                // Opcional: notificar vitória ou pontuação
+                view.onGameWon(PositionContent.SNOWMAN);
+                return;
             }
 
             currentType = snowballs.get(nextPos);

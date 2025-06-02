@@ -85,9 +85,10 @@ public class SnowmanCell extends StackPane {
             case MONSTER -> {
                 setAsMonster();
             }
-            case SNOWBALL -> {
-                backgroundView.setImage(snow);
-                contentView.setImage(null);
+            case SNOWMAN -> {
+                backgroundView.setImage(no_snow);
+                contentView.setImage(new Image("/snowman.png"));
+                snowballView.setImage(null);
             }
             default -> {
                 backgroundView.setImage(no_snow);
@@ -119,7 +120,7 @@ public class SnowmanCell extends StackPane {
             }
             case AVERAGE_SMALL -> {
                 snowballView.setImage(new Image("/average_small.png"));
-                snowballView.setFitWidth(CELL_SIZE * 0.75);
+                snowballView.setFitWidth(CELL_SIZE * 1.55);
             }
             default -> {
                 snowballView.setImage(smallSnowball);

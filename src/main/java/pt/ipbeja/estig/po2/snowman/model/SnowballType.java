@@ -4,5 +4,5 @@ public enum SnowballType {
     SMALL,
     AVERAGE,
     AVERAGE_SMALL,
-    BIG
+    BIG,
 }
