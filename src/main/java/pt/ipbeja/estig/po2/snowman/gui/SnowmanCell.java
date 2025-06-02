@@ -44,8 +44,6 @@ public class SnowmanCell extends StackPane {
         this.setPadding(Insets.EMPTY);
         this.setSnapToPixel(true);
         this.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
-        this.setScaleX(1.001);
-        this.setScaleY(1.001);
 
         this.getChildren().addAll(backgroundView, contentView, snowballView);
 
@@ -128,7 +126,6 @@ public class SnowmanCell extends StackPane {
                 snowballView.setFitHeight(CELL_SIZE * 0.25);
             }
         }
-        // Mantém as proporções da imagem
         snowballView.setPreserveRatio(true);
     }
 

@@ -106,8 +106,7 @@ public class SnowManBoard extends Pane implements View {
 
     @Override
     public void onGameWon(PositionContent positionContent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Player " + positionContent + " won!");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ganhaste, Nivel 2?!");
         alert.showAndWait();
     }
 }
