@@ -79,7 +79,7 @@ public class SnowmanStart extends Application {
                 Monster monster = new Monster(new Position(0, 0));
                 BoardModel boardModel = new BoardModel(5, 7,null);
                 SnowManBoard snowManBoard = new SnowManBoard(boardModel);
-                boardModel.setView(snowManBoard);  // Só se BoardModel tiver esse método.
+                boardModel.setView(snowManBoard);
                 Scene gameScene = new Scene(snowManBoard, 800, 600);
                 gameScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 

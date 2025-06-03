@@ -1,9 +1,11 @@
 package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import pt.ipbeja.estig.po2.snowman.gui.*;
 import pt.ipbeja.estig.po2.snowman.model.*;
 
@@ -40,7 +42,6 @@ public class SnowManBoard extends Pane implements View {
                 updateMonsterPosition(oldPos, newPos);
             }
         });
-
         this.setFocusTraversable(true);
     }
 
@@ -120,15 +121,16 @@ public class SnowManBoard extends Pane implements View {
         alert.setHeaderText("Snowman criado com sucesso!");
         alert.setContentText("Vamos avançar para o nível 2?");
 
-        ButtonType simButton = new ButtonType("Sim");
-        ButtonType naoButton = new ButtonType("Não");
-        alert.getButtonTypes().setAll(simButton, naoButton);
+        ButtonType yesButton = new ButtonType("Sim");
+        ButtonType noButton = new ButtonType("Não");
+        alert.getButtonTypes().setAll(yesButton, noButton);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == simButton) {
+        if (result.isPresent() && result.get() == yesButton) {
             model.level2(); // Carrega o nível 2
             refreshBoard();  // Atualiza o tabuleiro
         }
+        //else new SnowmanStart(Scene);
     }
 
     private void refreshBoard() {

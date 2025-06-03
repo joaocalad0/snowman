@@ -3,18 +3,20 @@ package pt.ipbeja.estig.po2.snowman.model;
 import com.sun.source.doctree.ThrowsTree;
 
 public class SnowmanGame {
-/*
+
     private final BoardModel model;
     private final View view;
 
     public SnowmanGame(int rows, int cols, View view){
         this.view = view;
-        this.model = new BoardModel(rows, cols);
+        this.model = new BoardModel(rows, cols, view);
     }
 
-    public void play(Position pos){
+    public void movemonster(Direction direction){
+        model.moveMonster(direction);
+    }
 
-    }*/
+
 
 }
 

@@ -81,6 +81,7 @@ public class BoardModel {
             case SMALL -> SnowballType.AVERAGE;
             case AVERAGE -> SnowballType.BIG;
             case AVERAGE_SMALL -> SnowballType.BIG;
+            case AVERAGE_BIG -> SnowballType.AVERAGE_BIG;
             case BIG -> SnowballType.BIG;
         };
     }
@@ -131,6 +132,20 @@ public class BoardModel {
 
                     board.get(nextPos.getRow()).set(nextPos.getCol(),
                             originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
+                    originalCellContent.remove(nextPos);
+                    snowballs.remove(nextPos);
+                    view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
+                    return;
+                }
+            }
+
+            if (beyondContent == PositionContent.SNOWBALL){
+                beyondType = snowballs.get(beyondPos);
+                if (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE){
+                    snowballs.put(beyondPos, SnowballType.AVERAGE_BIG);
+                    view.update(beyondPos, PositionContent.SNOWBALL);
+
+                    board.get(nextPos.getRow()).set(nextPos.getCol(),originalCellContent.getOrDefault(nextPos,PositionContent.NO_SNOW));
                     originalCellContent.remove(nextPos);
                     snowballs.remove(nextPos);
                     view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
