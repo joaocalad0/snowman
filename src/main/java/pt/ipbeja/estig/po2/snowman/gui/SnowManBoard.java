@@ -118,7 +118,7 @@ public class SnowManBoard extends Pane implements View {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Parabéns!");
         alert.setHeaderText("Snowman criado com sucesso!");
-        alert.setContentText("Deseja avançar para o nível 2?");
+        alert.setContentText("Vamos avançar para o nível 2?");
 
         ButtonType simButton = new ButtonType("Sim");
         ButtonType naoButton = new ButtonType("Não");

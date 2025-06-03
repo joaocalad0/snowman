@@ -7,7 +7,7 @@ public class BoardModel {
     private final List<List<PositionContent>> board;
     private Monster monster;
     private final Map<Position, SnowballType> snowballs;
-    private final Map<Position, PositionContent> originalCellContent;  // Conteúdo original das células ocupadas pelas bolas
+    private final Map<Position, PositionContent> originalCellContent;
     private View view;
 
     public BoardModel(int rows, int cols, View view) {
@@ -41,7 +41,7 @@ public class BoardModel {
     }
 
     public void level2() {
-        // Limpa o tabuleiro completamente
+        // Limpa o tabuleiro
         for (List<PositionContent> row : board) {
             Collections.fill(row, PositionContent.NO_SNOW);
         }
@@ -63,7 +63,6 @@ public class BoardModel {
         monster.setPosition(new Position(0, 0));
         updateCell(monster.getPosition(), PositionContent.MONSTER);
 
-        // Atualiza a visualização
         if (view != null) {
             view.updateAllBoard();
         }
@@ -216,6 +215,6 @@ public class BoardModel {
     }
 
     public void updateCell(Position newPos, PositionContent positionContent) {
-        // Implementa se precisares
+
     }
 }
