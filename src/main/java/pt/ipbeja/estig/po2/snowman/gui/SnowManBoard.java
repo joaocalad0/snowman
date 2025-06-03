@@ -2,11 +2,13 @@ package pt.ipbeja.estig.po2.snowman.gui;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import pt.ipbeja.estig.po2.snowman.gui.*;
 import pt.ipbeja.estig.po2.snowman.model.*;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SnowManBoard extends Pane implements View {
 
@@ -62,16 +64,24 @@ public class SnowManBoard extends Pane implements View {
                     cell.setPositionContent(content);
                 }
 
-                // Posiciona manualmente para evitar gaps
                 cell.relocate(col * CELL_SIZE, row * CELL_SIZE);
 
                 this.getChildren().add(cell);
                 cells[row][col] = cell;
             }
         }
-
-        // Define tamanho do painel para conter todas as células
         this.setPrefSize(board.get(0).size() * CELL_SIZE, board.size() * CELL_SIZE);
+    }
+
+    @Override
+    public void updateAllBoard() {
+        for (int row = 0; row < cells.length; row++) {
+            for (int col = 0; col < cells[row].length; col++) {
+                Position pos = new Position(row, col);
+                PositionContent content = model.getBoard().get(row).get(col);
+                cells[row][col].setPositionContent(content);
+            }
+        }
     }
 
     // Atualiza visualmente a célula antiga e nova do monstro
@@ -93,7 +103,6 @@ public class SnowManBoard extends Pane implements View {
         }
     }
 
-    // Implementa método da interface View para atualizar a UI
     @Override
     public void update(Position position, PositionContent content) {
         if (content == PositionContent.SNOWBALL) {
@@ -106,8 +115,26 @@ public class SnowManBoard extends Pane implements View {
 
     @Override
     public void onGameWon(PositionContent positionContent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ganhaste, Nivel 2?!");
-        alert.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Parabéns!");
+        alert.setHeaderText("Snowman criado com sucesso!");
+        alert.setContentText("Deseja avançar para o nível 2?");
+
+        ButtonType simButton = new ButtonType("Sim");
+        ButtonType naoButton = new ButtonType("Não");
+        alert.getButtonTypes().setAll(simButton, naoButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == simButton) {
+            model.level2(); // Carrega o nível 2
+            refreshBoard();  // Atualiza o tabuleiro
+        }
+    }
+
+    private void refreshBoard() {
+        this.getChildren().clear();
+        createBoard();
+        this.requestFocus();
     }
 }
 

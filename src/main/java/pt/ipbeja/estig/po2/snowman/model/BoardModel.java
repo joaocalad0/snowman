@@ -1,9 +1,6 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BoardModel {
 
@@ -43,17 +40,26 @@ public class BoardModel {
         snowballs.put(pos, SnowballType.BIG);
     }
 
-    private void level2() {
+    public void level2() {
+        for (List<PositionContent> row : board) {
+            Collections.fill(row, PositionContent.NO_SNOW);
+        }
+        snowballs.clear();
+        originalCellContent.clear();
         board.get(0).set(0, PositionContent.NO_SNOW);
         board.get(0).set(1, PositionContent.SNOW);
         board.get(1).set(2, PositionContent.BLOCK);
         board.get(2).set(3, PositionContent.SNOW);
-        board.get(4).set(4, PositionContent.SNOW);
+        board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
 
         Position pos = new Position(1,1);
         board.get(pos.getRow()).set(pos.getCol(), PositionContent.SNOWBALL);
         snowballs.put(pos, SnowballType.BIG);
+
+        if (view != null) {
+            view.updateAllBoard();
+        }
     }
 
     public void setView(View view){

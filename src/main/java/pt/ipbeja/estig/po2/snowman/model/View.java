@@ -5,4 +5,6 @@ public interface View {
       void update(Position position, PositionContent content);
 
       void onGameWon(PositionContent positionContent);
+
+      void updateAllBoard();
 }

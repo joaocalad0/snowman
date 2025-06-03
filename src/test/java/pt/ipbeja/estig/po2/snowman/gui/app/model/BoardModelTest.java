@@ -14,6 +14,11 @@ class BoardModelTest {
         BoardModel model = new BoardModel(5, 7, new View() {
             public void update(Position p, PositionContent c) {}
             public void onGameWon(PositionContent w) {}
+
+            @Override
+            public void updateAllBoard() {
+
+            }
         });
 
         model.updateCell(model.getMonster().getPosition(), PositionContent.NO_SNOW);
