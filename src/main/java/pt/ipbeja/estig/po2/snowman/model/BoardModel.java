@@ -173,7 +173,6 @@ public class BoardModel {
             originalCellContent.remove(nextPos);
             snowballs.remove(nextPos);
             view.update(nextPos, oldCellContent);
-            // Guarda o conteúdo original da nova célula antes de colocar a bola
             originalCellContent.put(beyondPos, board.get(beyondPos.getRow()).get(beyondPos.getCol()));
 
             board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWBALL);
@@ -182,7 +181,7 @@ public class BoardModel {
 
         } else if (nextContent != PositionContent.NO_SNOW && nextContent != PositionContent.SNOW) {
             System.out.println("Move bloqueado por " + nextContent + " em " + nextPos);
-            return; // Bloqueado por bloco ou outra coisa
+            return;
         }
 
         if (snowballs.containsKey(currentPos)) {
