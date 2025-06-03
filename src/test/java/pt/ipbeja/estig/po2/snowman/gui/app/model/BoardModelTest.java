@@ -9,8 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BoardModelTest {
 
-
-
     //1º teste
         @Test
         void testMonsterToTheLeft() {

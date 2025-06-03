@@ -41,22 +41,29 @@ public class BoardModel {
     }
 
     public void level2() {
+        // Limpa o tabuleiro completamente
         for (List<PositionContent> row : board) {
             Collections.fill(row, PositionContent.NO_SNOW);
         }
         snowballs.clear();
         originalCellContent.clear();
+
         board.get(0).set(0, PositionContent.NO_SNOW);
         board.get(0).set(1, PositionContent.SNOW);
         board.get(1).set(2, PositionContent.BLOCK);
         board.get(2).set(3, PositionContent.SNOW);
+        board.get(1).set(3, PositionContent.BLOCK);
+        board.get(3).set(1, PositionContent.BLOCK);
         board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
+        Position bigBallPos = new Position(1, 1);
+        board.get(bigBallPos.getRow()).set(bigBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(bigBallPos, SnowballType.BIG);
 
-        Position pos = new Position(1,1);
-        board.get(pos.getRow()).set(pos.getCol(), PositionContent.SNOWBALL);
-        snowballs.put(pos, SnowballType.BIG);
+        monster.setPosition(new Position(0, 0));
+        updateCell(monster.getPosition(), PositionContent.MONSTER);
 
+        // Atualiza a visualização
         if (view != null) {
             view.updateAllBoard();
         }
