@@ -1,21 +1,11 @@
 package pt.ipbeja.estig.po2.snowman.model;
 
-public class Monster {
-
-    private Position position;
+public class Monster extends MobileElement {
     private int snowballCount;
 
     public Monster(Position position) {
-        this.position = new Position(0,0);
+        super(position);  // chama o construtor da classe pai
         this.snowballCount = 0;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public int getSnowballCount() {
@@ -51,4 +41,3 @@ public class Monster {
         }
     }
 }
-

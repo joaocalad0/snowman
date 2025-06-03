@@ -14,14 +14,5 @@ public abstract class MobileElement {
     public void setPosition(Position position) {
         this.position = position;
     }
-
-    public int getRow() {
-        return position.getRow();
-    }
-
-    public int getCol() {
-        return position.getCol();
-    }
-
-
 }
+

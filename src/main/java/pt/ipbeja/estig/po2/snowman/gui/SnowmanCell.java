@@ -24,7 +24,7 @@ public class SnowmanCell extends StackPane {
     private final ImageView snowballView = new ImageView();
 
     private final Position position;
-    private static final double CELL_SIZE = 114;
+    private static final double CELL_SIZE = 116;
 
     public SnowmanCell(Position position) {
         this.position = position;

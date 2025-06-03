@@ -40,12 +40,10 @@ class BoardModelTest {
                     @Override public void onGameWon(PositionContent c) {}
                     @Override public void updateAllBoard(){}
                 });
-
-                // 2. Limpar o tabuleiro
+                // 2. Limpa o tabuleiro
                 for (List<PositionContent> row : board.getBoard()) {
                     Collections.fill(row, PositionContent.NO_SNOW);
                 }
-
                 // 3. Posicionar neve onde a bola será criada (2,3) e transformada (2,5)
                 board.getBoard().get(2).set(3, PositionContent.SNOW);
                 board.getBoard().get(2).set(5, PositionContent.SNOW);
