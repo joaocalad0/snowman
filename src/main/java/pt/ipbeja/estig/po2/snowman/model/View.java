@@ -8,3 +8,6 @@ public interface View {
 
       void updateAllBoard();
 }
+
+
+
