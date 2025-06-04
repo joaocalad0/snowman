@@ -71,111 +71,23 @@ public class BoardModel {
         }
     }
 
-    // Método principal de movimento
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
         Position nextPos = calculateNewPosition(currentPos, direction);
 
-        if (!isValidMove(nextPos)) {
-            return;
-        }
+        if (!isValidMove(nextPos)) return;
 
         PositionContent nextContent = board.get(nextPos.getRow()).get(nextPos.getCol());
 
         if (nextContent == PositionContent.SNOWBALL) {
-            Position beyondPos = calculateNewPosition(nextPos, direction);
-            if (!isValidMove(beyondPos)) {
-                return;
-            }
-            PositionContent beyondContent = board.get(beyondPos.getRow()).get(beyondPos.getCol());
-            SnowballType currentType = snowballs.get(nextPos);
-
-            SnowballType beyondType = null;
-            if (beyondContent == PositionContent.SNOWBALL) {
-                beyondType = snowballs.get(beyondPos);
-                if (currentType == SnowballType.SMALL && beyondType == SnowballType.AVERAGE) {
-                    snowballs.put(beyondPos, SnowballType.AVERAGE_SMALL);
-                    view.update(beyondPos, PositionContent.SNOWBALL);
-
-                    board.get(nextPos.getRow()).set(nextPos.getCol(),
-                            originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
-                    originalCellContent.remove(nextPos);
-                    snowballs.remove(nextPos);
-                    view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
-                    return;
-                }
-            }
-
-            if (beyondContent == PositionContent.SNOWBALL) {
-                beyondType = snowballs.get(beyondPos);
-                if (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE) {
-                    snowballs.put(beyondPos, SnowballType.AVERAGE_BIG);
-                    view.update(beyondPos, PositionContent.SNOWBALL);
-
-                    board.get(nextPos.getRow()).set(nextPos.getCol(), originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
-                    originalCellContent.remove(nextPos);
-                    snowballs.remove(nextPos);
-                    view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
-                    return;
-                }
-            }
-
-            if ((currentType == SnowballType.AVERAGE_SMALL && beyondType == SnowballType.BIG) ||
-                    (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE_SMALL)) {
-                board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWMAN);
-                snowballs.remove(beyondPos);
-                originalCellContent.remove(beyondPos);
-                view.update(beyondPos, PositionContent.SNOWMAN);
-
-                board.get(nextPos.getRow()).set(nextPos.getCol(),
-                        originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW));
-                originalCellContent.remove(nextPos);
-                snowballs.remove(nextPos);
-                view.update(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
-
-                recordMove(currentPos, nextPos);
-                checkSnowmanCompletion(beyondPos);
-                return;
-            }
-
-            currentType = snowballs.get(nextPos);
-            if (currentType == null) {
-                currentType = SnowballType.SMALL;
-            }
-
-            if (beyondContent == PositionContent.SNOW && currentType != SnowballType.BIG) {
-                currentType = grow(currentType);
-            }
-
-            PositionContent oldCellContent = originalCellContent.getOrDefault(nextPos, PositionContent.NO_SNOW);
-            board.get(nextPos.getRow()).set(nextPos.getCol(), oldCellContent);
-            originalCellContent.remove(nextPos);
-            snowballs.remove(nextPos);
-            view.update(nextPos, oldCellContent);
-            originalCellContent.put(beyondPos, board.get(beyondPos.getRow()).get(beyondPos.getCol()));
-
-            board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWBALL);
-            snowballs.put(beyondPos, currentType);
-            view.update(beyondPos, PositionContent.SNOWBALL);
-        }
-        else if (nextContent != PositionContent.NO_SNOW && nextContent != PositionContent.SNOW) {
+            if (handleSnowballPush(currentPos, nextPos, direction)) return;
+        } else if (nextContent != PositionContent.NO_SNOW && nextContent != PositionContent.SNOW) {
             return;
         }
 
-        if (snowballs.containsKey(currentPos)) {
-            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
-            view.update(currentPos, PositionContent.SNOWBALL);
-        }
-        else {
-            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.NO_SNOW);
-            view.update(currentPos, PositionContent.NO_SNOW);
-        }
-
+        updatePreviousCell(currentPos);
         if (nextContent == PositionContent.SNOW) {
-            originalCellContent.put(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
-            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.SNOWBALL);
-            snowballs.put(nextPos, SnowballType.SMALL);
-            view.update(nextPos, PositionContent.SNOWBALL);
+            handleSnowCreationIfNeeded(nextPos);
         }
 
         monster.setPosition(nextPos);
@@ -187,6 +99,110 @@ public class BoardModel {
             checkSnowmanCompletion(nextPos);
         }
     }
+
+    private boolean handleSnowballPush(Position currentPos, Position nextPos, Direction direction) {
+        Position beyondPos = calculateNewPosition(nextPos, direction);
+        if (!isValidMove(beyondPos)) return true;
+
+        PositionContent beyondContent = board.get(beyondPos.getRow()).get(beyondPos.getCol());
+        SnowballType currentType = snowballs.get(nextPos);
+
+        if (tryCombineToAverageSmall(nextPos, beyondPos, currentType, beyondContent)) return true;
+        if (tryCombineToAverageBig(nextPos, beyondPos, currentType, beyondContent)) return true;
+        if (tryMakeSnowman(currentPos, nextPos, beyondPos, currentType, beyondContent)) return true;
+
+        pushSnowball(nextPos, beyondPos, currentType, beyondContent);
+        return false;
+    }
+
+    private boolean tryCombineToAverageSmall(Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
+        if (beyondContent == PositionContent.SNOWBALL) {
+            SnowballType beyondType = snowballs.get(beyondPos);
+            if (currentType == SnowballType.SMALL && beyondType == SnowballType.AVERAGE) {
+                snowballs.put(beyondPos, SnowballType.AVERAGE_SMALL);
+                view.update(beyondPos, PositionContent.SNOWBALL);
+                clearOldSnowball(nextPos);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryCombineToAverageBig(Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
+        if (beyondContent == PositionContent.SNOWBALL) {
+            SnowballType beyondType = snowballs.get(beyondPos);
+            if (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE) {
+                snowballs.put(beyondPos, SnowballType.AVERAGE_BIG);
+                view.update(beyondPos, PositionContent.SNOWBALL);
+                clearOldSnowball(nextPos);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryMakeSnowman(Position currentPos, Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
+        SnowballType beyondType = snowballs.get(beyondPos);
+        if ((currentType == SnowballType.AVERAGE_SMALL && beyondType == SnowballType.BIG) ||
+                (currentType == SnowballType.BIG && beyondType == SnowballType.AVERAGE_SMALL)) {
+
+            board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWMAN);
+            snowballs.remove(beyondPos);
+            originalCellContent.remove(beyondPos);
+            view.update(beyondPos, PositionContent.SNOWMAN);
+
+            clearOldSnowball(nextPos);
+            recordMove(currentPos, nextPos);
+            checkSnowmanCompletion(beyondPos);
+            return true;
+        }
+        return false;
+    }
+
+    private void clearOldSnowball(Position pos) {
+        board.get(pos.getRow()).set(pos.getCol(), originalCellContent.getOrDefault(pos, PositionContent.NO_SNOW));
+        originalCellContent.remove(pos);
+        snowballs.remove(pos);
+        view.update(pos, board.get(pos.getRow()).get(pos.getCol()));
+    }
+
+    private void pushSnowball(Position from, Position to, SnowballType currentType, PositionContent beyondContent) {
+        if (beyondContent == PositionContent.SNOW && currentType != SnowballType.BIG) {
+            currentType = grow(currentType);
+        }
+
+        PositionContent oldCellContent = originalCellContent.getOrDefault(from, PositionContent.NO_SNOW);
+        board.get(from.getRow()).set(from.getCol(), oldCellContent);
+        originalCellContent.remove(from);
+        snowballs.remove(from);
+        view.update(from, oldCellContent);
+
+        originalCellContent.put(to, board.get(to.getRow()).get(to.getCol()));
+        board.get(to.getRow()).set(to.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(to, currentType);
+        view.update(to, PositionContent.SNOWBALL);
+    }
+
+    private void updatePreviousCell(Position currentPos) {
+        if (snowballs.containsKey(currentPos)) {
+            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
+            view.update(currentPos, PositionContent.SNOWBALL);
+        } else {
+            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.NO_SNOW);
+            view.update(currentPos, PositionContent.NO_SNOW);
+        }
+    }
+
+    private void handleSnowCreationIfNeeded(Position nextPos) {
+        if (board.get(nextPos.getRow()).get(nextPos.getCol()) == PositionContent.SNOW) {
+            originalCellContent.put(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
+            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.SNOWBALL);
+            snowballs.put(nextPos, SnowballType.SMALL);
+            view.update(nextPos, PositionContent.SNOWBALL);
+        }
+    }
+
+
 
     // --- Métodos auxiliares novos ---
     private void recordMove(Position from, Position to) {
