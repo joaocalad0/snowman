@@ -38,9 +38,17 @@ public class BoardModel {
         board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
 
-        Position pos = new Position(1,1);
-        board.get(pos.getRow()).set(pos.getCol(), PositionContent.SNOWBALL);
-        snowballs.put(pos, SnowballType.BIG);
+        Position smallBallPos = new Position(2, 5);
+        board.get(smallBallPos.getRow()).set(smallBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(smallBallPos, SnowballType.SMALL);
+
+        Position averageBallPos = new Position(4, 4);
+        board.get(averageBallPos.getRow()).set(averageBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(averageBallPos, SnowballType.AVERAGE);
+
+        Position bigBallPos = new Position(1, 3);
+        board.get(bigBallPos.getRow()).set(bigBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(bigBallPos, SnowballType.BIG);
     }
 
     // Inicialização do nível 2
@@ -59,7 +67,16 @@ public class BoardModel {
         board.get(3).set(1, PositionContent.BLOCK);
         board.get(4).set(4, PositionContent.BLOCK);
         board.get(2).set(6, PositionContent.SNOW);
-        Position bigBallPos = new Position(1, 1);
+
+        Position smallBallPos = new Position(3, 4);
+        board.get(smallBallPos.getRow()).set(smallBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(smallBallPos, SnowballType.SMALL);
+
+        Position averageBallPos = new Position(4, 2);
+        board.get(averageBallPos.getRow()).set(averageBallPos.getCol(), PositionContent.SNOWBALL);
+        snowballs.put(averageBallPos, SnowballType.AVERAGE);
+
+        Position bigBallPos = new Position(1, 3);
         board.get(bigBallPos.getRow()).set(bigBallPos.getCol(), PositionContent.SNOWBALL);
         snowballs.put(bigBallPos, SnowballType.BIG);
 
