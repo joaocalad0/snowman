@@ -4,7 +4,7 @@ public class Monster extends MobileElement {
     private int snowballCount;
 
     public Monster(Position position) {
-        super(position);  // chama o construtor da classe pai
+        super(position);
         this.snowballCount = 0;
     }
 

@@ -7,6 +7,7 @@ public interface View {
       void onGameWon(PositionContent positionContent);
 
       void updateAllBoard();
+
 }
 
 

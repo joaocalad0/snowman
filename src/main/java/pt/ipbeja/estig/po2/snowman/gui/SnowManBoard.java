@@ -18,6 +18,7 @@ public class SnowManBoard extends Pane implements View {
     private SnowmanCell[][] cells;
 
     private static final double CELL_SIZE = 114;
+    private static final double COORDINATE_SIZE = 30;
 
     public SnowManBoard(BoardModel model) {
         this.model = model;
