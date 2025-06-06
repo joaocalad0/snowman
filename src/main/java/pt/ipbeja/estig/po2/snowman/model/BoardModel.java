@@ -147,11 +147,12 @@ public class BoardModel {
         if (tryCombineToAverageSmall(nextPos, beyondPos, currentType, beyondContent)) return true;
         if (tryCombineToAverageBig(nextPos, beyondPos, currentType, beyondContent)) return true;
         if (tryMakeSnowman(currentPos, nextPos, beyondPos, currentType, beyondContent)) return true;
+        if (tryMakeSnowmanSmallToAverageBig(currentPos, nextPos, beyondPos, currentType, beyondContent)) return true;
+
 
         pushSnowball(nextPos, beyondPos, currentType, beyondContent);
         return false;
     }
-
 
     private boolean tryCombineToAverageSmall(Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         if (beyondContent == PositionContent.SNOWBALL) {
@@ -198,6 +199,41 @@ public class BoardModel {
         }
         return false;
     }
+
+    private boolean tryMakeSnowmanSmallToAverageBig(Position currentPos, Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
+        Snowball beyondSnowball = null;
+        for (Snowball s : snowballs) {
+            if (s.getPosition().equals(beyondPos)) {
+                beyondSnowball = s;
+                break;
+            }
+        }
+        if (beyondSnowball != null &&
+                currentType == SnowballType.SMALL &&
+                beyondSnowball.getType() == SnowballType.AVERAGE_BIG) {
+
+            board.get(beyondPos.getRow()).set(beyondPos.getCol(), PositionContent.SNOWMAN);
+            snowballs.remove(beyondSnowball);
+            originalCellContent.remove(beyondPos);
+            view.update(beyondPos, PositionContent.SNOWMAN);
+
+            clearOldSnowball(nextPos);
+
+            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.MONSTER);
+            view.update(nextPos, PositionContent.MONSTER);
+
+            board.get(currentPos.getRow()).set(currentPos.getCol(), originalCellContent.getOrDefault(currentPos, PositionContent.NO_SNOW));
+            originalCellContent.remove(currentPos);
+            view.update(currentPos, board.get(currentPos.getRow()).get(currentPos.getCol()));
+
+            recordMove(currentPos, nextPos);
+            checkSnowmanCompletion(beyondPos);
+
+            return true;
+        }
+        return false;
+    }
+
 
     private boolean tryMakeSnowman(Position currentPos, Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         Snowball beyondSnowball = null;
@@ -259,25 +295,14 @@ public class BoardModel {
     }
 
     private void updatePreviousCell(Position currentPos) {
-        // 1. Verifica se havia uma snowball nesta posição antes do movimento
-        boolean hadSnowball = snowballs.stream()
-                .anyMatch(s -> s.getPosition().equals(currentPos));
-
-        // 2. Se era SNOW e não tinha snowball, cria uma nova pequena
+        // Ao sair da posição atual, restaura o conteúdo original
         PositionContent original = originalCellContent.getOrDefault(currentPos, PositionContent.NO_SNOW);
-        if (original == PositionContent.SNOW && !hadSnowball) {
-            snowballs.add(new Snowball(currentPos, SnowballType.SMALL));
-            board.get(currentPos.getRow()).set(currentPos.getCol(), PositionContent.SNOWBALL);
-        }
-        // 3. Se não era SNOW ou já tinha snowball, restaura o conteúdo original
-        else {
-            board.get(currentPos.getRow()).set(currentPos.getCol(), original);
-            // Remove snowball se existir (caso de empurrão)
-            snowballs.removeIf(s -> s.getPosition().equals(currentPos));
-        }
-
-        view.update(currentPos, board.get(currentPos.getRow()).get(currentPos.getCol()));
+        board.get(currentPos.getRow()).set(currentPos.getCol(), original);
+        snowballs.removeIf(s -> s.getPosition().equals(currentPos));
+        originalCellContent.remove(currentPos);
+        view.update(currentPos, original);
     }
+
 
     private void handleSnowCreationIfNeeded(Position nextPos) {
         if (board.get(nextPos.getRow()).get(nextPos.getCol()) == PositionContent.SNOW) {

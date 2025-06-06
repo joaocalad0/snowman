@@ -194,8 +194,8 @@ public class SnowManBoard extends VBox implements View {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == yesButton) {
-            model.level2(); // Carrega o nível 2
-            refreshBoard();  // Atualiza o tabuleiro
+            model.level2();
+            refreshBoard();
         }
     }
 

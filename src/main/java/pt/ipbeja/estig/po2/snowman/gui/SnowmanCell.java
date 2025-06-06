@@ -58,7 +58,6 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsMonster() {
-        backgroundView.setImage(no_snow);
         contentView.setImage(monster);
         snowballView.setImage(null);
     }
