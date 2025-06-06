@@ -86,7 +86,7 @@ public class SnowmanStart extends Application {
                 stage.setScene(gameScene);
                 snowManBoard.requestFocus();
 
-               // SoundController("/Level1Music.wav");
+               SoundController.playMusic("/Level1Music.wav");
             });
 
 

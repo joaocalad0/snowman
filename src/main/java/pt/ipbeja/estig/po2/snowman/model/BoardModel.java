@@ -278,19 +278,32 @@ public class BoardModel {
     }
 
     private void pushSnowball(Position from, Position to, SnowballType currentType, PositionContent beyondContent) {
+        SnowballType newType = currentType;
+        boolean grew = false;
+
+        // Só cresce se não for BIG e se houver neve
         if (beyondContent == PositionContent.SNOW && currentType != SnowballType.BIG) {
-            currentType = grow(currentType);
+            newType = grow(currentType);
+            grew = newType != currentType;
+
+            if (grew) {
+                // Só apaga a neve se houver crescimento
+                board.get(to.getRow()).set(to.getCol(), PositionContent.NO_SNOW);
+                originalCellContent.putIfAbsent(to, PositionContent.SNOW);
+            }
         }
 
+        // Atualiza a posição antiga
         PositionContent oldCellContent = originalCellContent.getOrDefault(from, PositionContent.NO_SNOW);
         board.get(from.getRow()).set(from.getCol(), oldCellContent);
         originalCellContent.remove(from);
-        snowballs.remove(from);
+        snowballs.removeIf(s -> s.getPosition().equals(from));
         view.update(from, oldCellContent);
 
-        originalCellContent.put(to, board.get(to.getRow()).get(to.getCol()));
+        // Atualiza nova posição com a snowball
         board.get(to.getRow()).set(to.getCol(), PositionContent.SNOWBALL);
-        snowballs.add(new Snowball(to, currentType));
+        snowballs.removeIf(s -> s.getPosition().equals(to));
+        snowballs.add(new Snowball(to, newType));
         view.update(to, PositionContent.SNOWBALL);
     }
 
@@ -383,5 +396,9 @@ public class BoardModel {
     }
 
     public void updateCell(Position newPos, PositionContent positionContent) {
+        board.get(newPos.getRow()).set(newPos.getCol(), positionContent);
+        if (view != null) {
+            view.update(newPos, positionContent);
+        }
     }
 }
