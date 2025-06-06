@@ -2,105 +2,234 @@ package pt.ipbeja.estig.po2.snowman.gui.app.model;
 
 import org.junit.jupiter.api.Test;
 import pt.ipbeja.estig.po2.snowman.model.*;
-import java.util.List;
-import java.util.Collections;
-import static org.junit.jupiter.api.Assertions.assertAll;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BoardModelTest {
 
-    //1º teste
-        @Test
-        void testMonsterToTheLeft() {
-            // 1. Criar board com uma implementação mínima de View
-            BoardModel board = new BoardModel(5, 7, new View() {
-                public void update(Position position, PositionContent content) {}
-                public void onGameWon(PositionContent c) {}
-                public void updateAllBoard() {}
-            });
-
-            assertAll(
-                    () -> assertEquals(new Position(0, 0), board.getMonster().getPosition()),
-                    () -> { board.moveMonster(Direction.LEFT);
-                        assertEquals(new Position(0, 0), board.getMonster().getPosition()); },
-                    () -> { board.moveMonster(Direction.RIGHT);
-                        assertEquals(new Position(0, 1), board.getMonster().getPosition()); },
-                    () -> { board.moveMonster(Direction.LEFT);
-                        assertEquals(new Position(0, 0), board.getMonster().getPosition()); }
-            );
-
-
-        }
-
-            @Test
-    void  testCreateAverageSnowball() {
-
-                BoardModel board = new BoardModel(5, 7, new View() {
-                    @Override public void update(Position p, PositionContent c) {}
-                    @Override public void onGameWon(PositionContent c) {}
-                    @Override public void updateAllBoard(){}
-                });
-                // 2. Limpa o tabuleiro
-                for (List<PositionContent> row : board.getBoard()) {
-                    Collections.fill(row, PositionContent.NO_SNOW);
-                }
-                // 3. Posicionar neve onde a bola será criada (2,3) e transformada (2,5)
-                board.getBoard().get(2).set(3, PositionContent.SNOW);
-                board.getBoard().get(2).set(5, PositionContent.SNOW);
-                // 4. Posicionar monstro em (0,0) - POSIÇÃO INICIAL CORRIGIDA
-                //board.getMonster().setPosition(new Position(0, 0));
-                //board.getBoard().get(0).set(0, PositionContent.MONSTER);
-                // 5. Movimentos para levar o monstro até (2,3) - CRIA BOLA PEQUENA
-                board.moveMonster(Direction.DOWN);  // (0,0) → (1,0)
-                board.moveMonster(Direction.DOWN);  // (1,0) → (2,0)
-                board.moveMonster(Direction.RIGHT); // (2,0) → (2,1)
-                board.moveMonster(Direction.RIGHT); // (2,1) → (2,2)
-                board.moveMonster(Direction.RIGHT); // (2,2) → (2,3)
-                board.moveMonster(Direction.RIGHT); // (2,2) → (2,4)// → CRIA BOLA PEQUENA
-                // 6. Verificação intermediária (bola criada em (2,3))
-                assertEquals(PositionContent.SNOWBALL, board.getBoard().get(2).get(3),
-                        "Deveria ter criado uma bola de neve em (2,3)");
-                assertEquals(SnowballType.SMALL, board.getSnowballTypeAt(new Position(2, 3)),
-                        "A bola criada deveria ser pequena (SMALL)");
-                // 7. Movimentos adicionais (como você especificou)
-                board.moveMonster(Direction.DOWN);  // (2,4) → (3,4)
-                board.moveMonster(Direction.LEFT);  // (3,4) → (3,3)
-                board.moveMonster(Direction.LEFT);  // (3,3) → (3,2)
-                board.moveMonster(Direction.UP);    // (3,2) → (2,2)
-                // 8. Movimentos para a direita até (2,5) - TRANSFORMA BOLA EM MÉDIA
-                board.moveMonster(Direction.RIGHT); // (2,2) → (2,3) → EMPURRA BOLA PARA (2,4)
-                board.moveMonster(Direction.RIGHT);// (2,3) → (2,4) → EMPURRA BOLA PARA (2,5) → VIRA MÉDIA
-                board.moveMonster(Direction.RIGHT);
-                // 9. Verificações finais
-                assertAll(
-                        () -> assertEquals(PositionContent.MONSTER, board.getBoard().get(2).get(5),
-                                "O monstro deveria estar em (2,5) após empurrar a bola"),
-                        () -> assertEquals(PositionContent.SNOWBALL, board.getBoard().get(2).get(6),
-                                "A bola deveria estar em (2,6) após ser empurrada"),
-                        () -> assertEquals(SnowballType.AVERAGE, board.getSnowballTypeAt(new Position(2, 6)),
-                                "A bola deveria ser média (AVERAGE) após passar pela neve em (2,6)")
-                );
-
-
+    /**
+     * Tests if the monster moves correctly to the left side.
+     * The monster starts at position (0,0), moves right and then moves back to the left.
+     * Verifies that it ends up again at (0,0).
+     */
+    @Test
+    void testMonsterToTheLeft() {
+        // Create a fake view
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
             }
+
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        // Create a fake 5x7 board
+        BoardModel board = new BoardModel(5, 7, fakeView);
+
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+        board.moveMonster(Direction.RIGHT);
+        board.moveMonster(Direction.LEFT);
+
+
+        assertEquals(PositionContent.MONSTER,board.getBoard().get(0).get(0), "The monster should have moved back to the left");
+    }
+
+    /**
+     * Tests if a SMALL snowball turns into an AVERAGE snowball
+     * when pushed over snow.
+     * Snowball starts as SMALL at (0,1), pushed to (0,2) which contains snow.
+     */
+    @Test
+    void testCreateAverageSnowball() {
+        // Create a fake view
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
+            }
+
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        // Create a 5x7 board with the fake view
+        BoardModel board = new BoardModel(5, 7, fakeView);
+        Position smallBallPos = new Position(0, 1);
+
+        // Place SMALL snowball at (0,1) and snow at (0,2)
+        board.getBoard().get(0).set(1, PositionContent.SNOWBALL);
+        board.getBoard().get(0).set(2, PositionContent.SNOW);
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+
+        board.getSnowballs().add(new Snowball(smallBallPos, SnowballType.SMALL));
+        board.moveMonster(Direction.RIGHT);
+
+        assertEquals(SnowballType.AVERAGE,board.getSnowballTypeAt(new Position(0, 2)), "The snowball should have grown to AVERAGE");
+    }
+
+    /**
+     * Tests if an AVERAGE snowball becomes a BIG snowball
+     * when pushed over snow.
+     * Snowball starts as AVERAGE at (0,1), pushed to (0,2).
+     */
     @Test
     void testCreateBigSnowball() {
+        // Create a fake view
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
+            }
 
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        BoardModel board = new BoardModel(5, 7, fakeView);
+        Position averageBallPos = new Position(0, 1);
+
+        // Place AVERAGE snowball at (0,1) and snow at (0,2)
+        board.getBoard().get(0).set(1, PositionContent.SNOWBALL);
+        board.getBoard().get(0).set(2, PositionContent.SNOW);
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+
+        board.getSnowballs().add(new Snowball(averageBallPos, SnowballType.AVERAGE));
+        board.moveMonster(Direction.RIGHT);
+
+        assertEquals(SnowballType.BIG,board.getSnowballTypeAt(new Position(0, 2)), "The snowball should have grown to BIG");
     }
 
+    /**
+     * Tests that a BIG snowball does not grow further when pushed over snow.
+     * Snowball starts as BIG at (0,1), and should stay BIG after move.
+     */
     @Test
     void testMaintainBigSnowball() {
+        // Create a fake view
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
+            }
 
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        BoardModel board = new BoardModel(5, 7, fakeView);
+        Position bigBallPos = new Position(0, 1);
+
+        // Place BIG snowball at (0,1) and snow at (0,2)
+        board.getBoard().get(0).set(1, PositionContent.SNOWBALL);
+        board.getBoard().get(0).set(2, PositionContent.SNOW);
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+
+        board.getSnowballs().add(new Snowball(bigBallPos, SnowballType.BIG));
+        board.moveMonster(Direction.RIGHT);
+
+        assertEquals(SnowballType.BIG,board.getSnowballTypeAt(new Position(0, 2)), "The snowball should remain BIG even over snow");
     }
 
+    /**
+     * Tests if pushing an AVERAGE snowball into a BIG one creates
+     * an incomplete snowman (type AVERAGE_BIG).
+     * The resulting snowball should be of type AVERAGE_BIG.
+     */
     @Test
     void testAverageBigSnowman() {
+        // Create a fake view
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
+            }
 
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        BoardModel board = new BoardModel(5, 7, fakeView);
+
+        Position averageBallPos = new Position(0, 1);
+        Position bigBallPos = new Position(0, 2);
+
+        // Place AVERAGE and BIG snowballs
+        board.getBoard().get(0).set(1, PositionContent.SNOWBALL);
+        board.getBoard().get(0).set(2, PositionContent.SNOWBALL);
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+
+        board.getSnowballs().add(new Snowball(averageBallPos, SnowballType.AVERAGE));
+        board.getSnowballs().add(new Snowball(bigBallPos, SnowballType.BIG));
+        board.moveMonster(Direction.RIGHT);
+
+
+        assertEquals(SnowballType.AVERAGE_BIG,board.getSnowballTypeAt(new Position(0, 2)), "An incomplete snowman should be formed");
     }
 
+    /**
+     * Tests if pushing a SMALL snowball into an AVERAGE_BIG snowball
+     * creates a complete snowman.
+     * The final content at the position should be PositionContent.SNOWMAN.
+     */
     @Test
     void testCompleteSnowman() {
+        View fakeView = new View() {
+            @Override
+            public void update(Position pos, PositionContent content) {
+            }
 
+            @Override
+            public void updateAllBoard() {
+            }
+
+            @Override
+            public void onGameWon(PositionContent winner) {
+            }
+        };
+
+        BoardModel board = new BoardModel(5, 7, fakeView);
+
+        Position smallBallPos = new Position(0, 1);
+        Position averageBigBallPos = new Position(0, 2);
+
+        // Place SMALL and AVERAGE_BIG snowballs
+        board.getBoard().get(0).set(1, PositionContent.SNOWBALL);
+        board.getBoard().get(0).set(2, PositionContent.SNOWBALL);
+        board.getMonster().setPosition(new Position(0, 0));
+        board.updateCell(new Position(0, 0), PositionContent.MONSTER);
+
+        board.getSnowballs().add(new Snowball(smallBallPos, SnowballType.SMALL));
+        board.getSnowballs().add(new Snowball(averageBigBallPos, SnowballType.AVERAGE_BIG));
+        board.moveMonster(Direction.RIGHT);
+
+
+        assertEquals(PositionContent.SNOWMAN,board.getBoard().get(0).get(2), "A complete snowman should be created");
     }
-
 }

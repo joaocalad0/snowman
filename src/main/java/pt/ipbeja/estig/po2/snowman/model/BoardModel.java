@@ -355,7 +355,7 @@ public class BoardModel {
                 return snowball.getType();
             }
         }
-        return SnowballType.SMALL; // Valor default quando não encontra
+        return SnowballType.SMALL;
     }
 
     private SnowballType grow(SnowballType current) {
@@ -400,5 +400,9 @@ public class BoardModel {
         if (view != null) {
             view.update(newPos, positionContent);
         }
+    }
+
+    public List<Snowball> getSnowballs() {
+        return this.snowballs;
     }
 }
