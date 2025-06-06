@@ -80,7 +80,7 @@ public class SnowmanStart extends Application {
                 BoardModel boardModel = new BoardModel(5, 7,null);
                 SnowManBoard snowManBoard = new SnowManBoard(boardModel);
                 boardModel.setView(snowManBoard);
-                Scene gameScene = new Scene(snowManBoard, 800, 600);
+                Scene gameScene = new Scene(snowManBoard, 1000, 800);
                 gameScene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
                 stage.setScene(gameScene);
