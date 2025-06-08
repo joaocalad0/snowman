@@ -94,7 +94,6 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsSnowball(SnowballType type) {
-
         if (type == SnowballType.BIG) {
 
         } else {
@@ -132,7 +131,6 @@ public class SnowmanCell extends StackPane {
         }
         snowballView.setPreserveRatio(true);
     }
-
 }
 
 
