@@ -8,6 +8,9 @@ import pt.ipbeja.estig.po2.snowman.model.Position;
 import pt.ipbeja.estig.po2.snowman.model.PositionContent;
 import pt.ipbeja.estig.po2.snowman.model.SnowballType;
 
+/**
+ * Represents a single cell in the Snowman game board.
+ */
 public class SnowmanCell extends StackPane {
 
     private static final Image no_snow = new Image("/no_snow.png");
@@ -26,6 +29,10 @@ public class SnowmanCell extends StackPane {
     private final Position position;
     private static final double CELL_SIZE = 116;
 
+    /**
+     * Creates a new SnowmanCell at the specified position.
+     * @param position The position of this cell
+     */
     public SnowmanCell(Position position) {
         this.position = position;
 
@@ -51,15 +58,18 @@ public class SnowmanCell extends StackPane {
         this.setSnapToPixel(true);
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
+    /**
+     * Sets this cell as containing the monster.
+     */
     public void setAsMonster() {
         contentView.setImage(monster);
         snowballView.setImage(null);
     }
 
+    /**
+     * Sets the content of this cell.
+     * @param content The content to set
+     */
     public void setPositionContent(PositionContent content) {
         switch (content) {
             case NO_SNOW -> {
@@ -93,6 +103,10 @@ public class SnowmanCell extends StackPane {
         }
     }
 
+    /**
+     * Sets this cell as containing a snowball of specified type.
+     * @param type The type of snowball
+     */
     public void setAsSnowball(SnowballType type) {
         if (type == SnowballType.BIG) {
 

@@ -3,6 +3,11 @@ package pt.ipbeja.estig.po2.snowman.model;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Represents the game board model for the Snowman game.
+ * Manages the game state including monster, snowballs, and board content.
+ */
+
 public class BoardModel {
     private final List<List<PositionContent>> board;
     private Monster monster;
@@ -10,6 +15,13 @@ public class BoardModel {
     private final Map<Position, PositionContent> originalCellContent;
     private View view;
     private final List<String> moveHistory = new ArrayList<>();
+
+    /**
+     * Constructs a new BoardModel with specified dimensions and view.
+     * @param rows Number of rows in the board
+     * @param cols Number of columns in the board
+     * @param view The view to be updated
+     */
 
     public BoardModel(int rows, int cols, View view) {
         this.view = view;
@@ -28,7 +40,9 @@ public class BoardModel {
         updateCell(monster.getPosition(), PositionContent.MONSTER);
     }
 
-    // Inicialização do nível 1
+    /**
+     * Initializes level 1 with specific board configuration.
+     */
     private void level1() {
         board.get(0).set(0, PositionContent.NO_SNOW);
         board.get(0).set(1, PositionContent.SNOW);
@@ -52,7 +66,9 @@ public class BoardModel {
         snowballs.add(new Snowball(bigBallPos, SnowballType.BIG));
     }
 
-    // Inicialização do nível 2
+    /**
+     * Initializes level 2 with specific board configuration.
+     */
     public void level2() {
         for (List<PositionContent> row : board) {
             Collections.fill(row, PositionContent.NO_SNOW);
@@ -89,6 +105,10 @@ public class BoardModel {
         }
     }
 
+    /**
+     * Moves the monster in the specified direction if possible.
+     * @param direction The direction to move the monster
+     */
     public void moveMonster(Direction direction) {
         Position currentPos = monster.getPosition();
         Position nextPos = calculateNewPosition(currentPos, direction);
@@ -113,6 +133,13 @@ public class BoardModel {
         recordMove(currentPos, nextPos);
     }
 
+    /**
+     * Handles pushing a snowball by the monster.
+     * @param currentPos Current position of the monster
+     * @param nextPos Next position (snowball position)
+     * @param direction Direction of movement
+     * @return true if push was handled, false otherwise
+     */
     private boolean handleSnowballPush(Position currentPos, Position nextPos, Direction direction) {
         Position beyondPos = calculateNewPosition(nextPos, direction);
         if (!isValidMove(beyondPos)) return true;
@@ -155,6 +182,14 @@ public class BoardModel {
         return false;
     }
 
+    /**
+     * Attempts to combine a small snowball with an average one to create average-small.
+     * @param nextPos Position of the snowball being pushed
+     * @param beyondPos Position beyond the snowball
+     * @param currentType Type of current snowball
+     * @param beyondContent Content beyond the snowball
+     * @return true if combination was successful, false otherwise
+     */
     private boolean tryCombineToAverageSmall(Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         if (beyondContent == PositionContent.SNOWBALL) {
             Snowball beyondSnowball = null;
@@ -178,6 +213,15 @@ public class BoardModel {
         return false;
     }
 
+    /**
+     * Attempts to combine an average snowball with a big one to create average-big.
+     * @param nextPos Position of the snowball being pushed
+     * @param beyondPos Position beyond the snowball
+     * @param currentType Type of current snowball
+     * @param beyondContent Content beyond the snowball
+     * @return true if combination was successful, false otherwise
+     */
+
     private boolean tryCombineToAverageBig(Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         if (beyondContent == PositionContent.SNOWBALL) {
             Snowball beyondSnowball = null;
@@ -200,6 +244,16 @@ public class BoardModel {
         }
         return false;
     }
+
+    /**
+     * Attempts to create a snowman by combining a small snowball with an average-big one.
+     * @param currentPos Current position of the monster
+     * @param nextPos Next position (snowball position)
+     * @param beyondPos Position beyond the snowball
+     * @param currentType Type of current snowball
+     * @param beyondContent Content beyond the snowball
+     * @return true if snowman was created, false otherwise
+     */
 
     private boolean tryMakeSnowmanSmallToAverageBig(Position currentPos, Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         Snowball beyondSnowball = null;
@@ -235,6 +289,15 @@ public class BoardModel {
         return false;
     }
 
+    /**
+     * Attempts to create a snowman by combining an average-small snowball with a big one.
+     * @param currentPos Current position of the monster
+     * @param nextPos Next position (snowball position)
+     * @param beyondPos Position beyond the snowball
+     * @param currentType Type of current snowball
+     * @param beyondContent Content beyond the snowball
+     * @return true if snowman was created, false otherwise
+     */
     private boolean tryMakeSnowman(Position currentPos, Position nextPos, Position beyondPos, SnowballType currentType, PositionContent beyondContent) {
         Snowball beyondSnowball = null;
         for (Snowball s : snowballs) {
@@ -266,6 +329,10 @@ public class BoardModel {
         return false;
     }
 
+    /**
+     * Clears the old snowball from a position.
+     * @param pos Position to clear
+     */
     private void clearOldSnowball(Position pos) {
         snowballs.removeIf(s -> s.getPosition().equals(pos));
         originalCellContent.remove(pos);
@@ -277,6 +344,14 @@ public class BoardModel {
         }
     }
 
+
+    /**
+     * Pushes a snowball from one position to another.
+     * @param from Starting position of the snowball
+     * @param to Destination position
+     * @param currentType Current type of the snowball
+     * @param beyondContent Content at the destination position
+     */
     private void pushSnowball(Position from, Position to, SnowballType currentType, PositionContent beyondContent) {
         SnowballType newType = currentType;
         boolean grew = false;
@@ -296,6 +371,11 @@ public class BoardModel {
         view.update(to, PositionContent.SNOWBALL);
     }
 
+
+    /**
+     * Updates the previous cell after monster moves away.
+     * @param currentPos Position to update
+     */
     private void updatePreviousCell(Position currentPos) {
         // Ao sair da posição atual, restaura o conteúdo original
         PositionContent original = originalCellContent.getOrDefault(currentPos, PositionContent.NO_SNOW);
@@ -305,15 +385,12 @@ public class BoardModel {
         view.update(currentPos, original);
     }
 
-    private void handleSnowCreationIfNeeded(Position nextPos) {
-        if (board.get(nextPos.getRow()).get(nextPos.getCol()) == PositionContent.SNOW) {
-            originalCellContent.put(nextPos, board.get(nextPos.getRow()).get(nextPos.getCol()));
-            board.get(nextPos.getRow()).set(nextPos.getCol(), PositionContent.SNOWBALL);
-            snowballs.add(new Snowball(nextPos, SnowballType.SMALL));
-            view.update(nextPos, PositionContent.SNOWBALL);
-        }
-    }
 
+    /**
+     * Records a move in the move history.
+     * @param from Starting position
+     * @param to Destination position
+     */
     private void recordMove(Position from, Position to) {
         moveHistory.add(String.format("(%d,%c) → (%d,%c)",
                 from.getRow() + 1,
@@ -322,6 +399,10 @@ public class BoardModel {
                 (char)('A' + to.getCol())));
     }
 
+    /**
+     * Checks if a snowman was completed at a position.
+     * @param position Position to check
+     */
     private void checkSnowmanCompletion(Position position) {
         if (board.get(position.getRow()).get(position.getCol()) == PositionContent.SNOWMAN) {
             try {
@@ -333,10 +414,20 @@ public class BoardModel {
         }
     }
 
+    /**
+     * Sets the view for this model.
+     * @param view The view to set
+     */
     public void setView(View view) {
         this.view = view;
     }
 
+
+    /**
+     * Gets the snowball type at a specific position.
+     * @param position Position to check
+     * @return SnowballType at the position
+     */
     public SnowballType getSnowballTypeAt(Position position) {
         for (Snowball snowball : snowballs) {
             if (snowball.getPosition().equals(position)) {
@@ -346,6 +437,12 @@ public class BoardModel {
         return SnowballType.SMALL;
     }
 
+
+    /**
+     * Grows a snowball to the next size.
+     * @param current Current snowball type
+     * @return Next snowball type
+     */
     private SnowballType grow(SnowballType current) {
         return switch (current) {
             case SMALL -> SnowballType.AVERAGE;
@@ -356,6 +453,12 @@ public class BoardModel {
         };
     }
 
+    /**
+     * Calculates new position based on current position and direction.
+     * @param currentPos Current position
+     * @param direction Direction to move
+     * @return New position
+     */
     private Position calculateNewPosition(Position currentPos, Direction direction) {
         return switch (direction) {
             case UP -> new Position(currentPos.getRow() - 1, currentPos.getCol());
@@ -365,6 +468,11 @@ public class BoardModel {
         };
     }
 
+    /**
+     * Checks if a move to a position is valid.
+     * @param pos Position to check
+     * @return true if move is valid, false otherwise
+     */
     private boolean isValidMove(Position pos) {
         int rows = board.size();
         int cols = board.get(0).size();
@@ -375,14 +483,27 @@ public class BoardModel {
         return content != PositionContent.BLOCK;
     }
 
+    /**
+     * Gets the game board.
+     * @return The game board
+     */
     public List<List<PositionContent>> getBoard() {
         return board;
     }
 
+    /**
+     * Gets the monster.
+     * @return The monster
+     */
     public Monster getMonster() {
         return monster;
     }
 
+    /**
+     * Updates a cell with new content.
+     * @param newPos Position to update
+     * @param positionContent New content for the cell
+     */
     public void updateCell(Position newPos, PositionContent positionContent) {
         board.get(newPos.getRow()).set(newPos.getCol(), positionContent);
         if (view != null) {
@@ -390,6 +511,10 @@ public class BoardModel {
         }
     }
 
+    /**
+     * Gets all snowballs on the board.
+     * @return List of snowballs
+     */
     public List<Snowball> getSnowballs() {
         return this.snowballs;
     }
