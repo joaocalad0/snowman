@@ -43,8 +43,6 @@ public class SnowmanCell extends StackPane {
         this.setMaxSize(CELL_SIZE, CELL_SIZE);
         this.setPadding(Insets.EMPTY);
         this.setSnapToPixel(true);
-        this.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
-
         this.getChildren().addAll(backgroundView, contentView, snowballView);
 
         backgroundView.setImage(no_snow);
@@ -96,9 +94,12 @@ public class SnowmanCell extends StackPane {
     }
 
     public void setAsSnowball(SnowballType type) {
-        // Define o fundo como relva (sem neve)
-        backgroundView.setImage(no_snow);
-        contentView.setImage(null);
+
+        if (type == SnowballType.BIG) {
+
+        } else {
+            backgroundView.setImage(no_snow);
+        }
         switch (type) {
             case SMALL -> {
                 snowballView.setImage(smallSnowball);

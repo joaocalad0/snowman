@@ -38,7 +38,7 @@ class BoardModelTest {
         board.moveMonster(Direction.LEFT);
 
 
-        assertEquals(PositionContent.MONSTER,board.getBoard().get(0).get(0), "The monster should have moved back to the left");
+        assertEquals(PositionContent.MONSTER,board.getBoard().get(0).get(0 ), "The monster should have moved back to the left");
     }
 
     /**
